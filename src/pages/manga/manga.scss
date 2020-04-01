@@ -1,0 +1,22 @@
+.mangaList{
+  flex: 2;
+  // height: auto;  
+  flex-direction: row !important;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+.chaptherView{
+  margin-right: 0.7em !important;
+  color: #2E2E2E !important;
+  transition-duration: 200ms;
+  
+    
+    &:hover{
+      color: #424242 !important;
+      transition-duration: 500ms;
+    }
+  
+}
