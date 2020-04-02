@@ -21,7 +21,105 @@ class Sidnav extends Component {
   onToggle = (expanded) => {
       this.setState({ expanded: expanded });
   };
+   
+  renderNav = () => {
+      const nav = [
 
+        {
+            type: 'unique',
+            title: 'Início',
+            icon: { size: '2x', icon: 'home' },
+            eventKey: '',
+        },
+        {
+            type: 'multiple',
+            title: 'Cadastro',
+            eventKey: 'configure',
+            icon: { size: '2x', icon: 'book-open' },
+            dropdown: [
+                {
+                    title: 'Manga',
+                    eventKey: 'manga/create', 
+                },
+                {
+                    title: 'Editora',
+                    eventKey: 'editora/create', 
+                },
+                {
+                    title: 'Autor',
+                    eventKey: 'author/create', 
+                },
+                {
+                    title: 'Gênero',
+                    eventKey: 'author/create', 
+                },
+                {
+                    title: 'Scan',
+                    eventKey: 'scans/create', 
+                },
+            ]
+        },
+        {
+            type: 'multiple',
+            title: 'Configuração',
+            eventKey: 'configure',
+            icon: { size: '2x', icon: 'cogs' },
+            dropdown: [
+                {
+                    title: 'Administrador',
+                    eventKey: 'admin/create', 
+                },   
+                {
+                    title: 'Editor',
+                    eventKey: 'editor/create', 
+                },               
+            ]
+        }
+      ]  
+      
+      
+      return nav?.map((x,y)=> {
+          if(x.type === 'unique'){
+             return  (
+                <NavItem key={y} eventKey={x.eventKey}>
+                <NavIcon>
+                    <MDBIcon style={{color: '#fff'}} icon={x.icon.icon} size={x.icon.size} />
+                </NavIcon>
+                <NavText style={{color: '#fff'}} >
+                    {x.title}
+                </NavText>
+                </NavItem>
+             )
+          }
+          else if (x.type === 'multiple'){
+              return (
+            <NavItem key={y} eventKey={x.eventKey} >
+            <NavIcon>
+                <MDBIcon style={{color: '#fff'}} icon={x.icon.icon} size={x.icon.size} />
+            </NavIcon>
+            <NavText >
+                {x.title}
+            </NavText>
+            {x.dropdown?.map((i, key) => {
+                return (
+                    <NavItem key={`${key}d${y}`}
+                            //  navitemStyle={{}}
+                             eventKey={i.eventKey} 
+                            //  navitemClassName={css(styles(theme).navItem)}
+                            //  navitemStyle={{display:displayinMenu(i.permission, this.props.roles)}}
+                             >
+                        <NavText>
+                            {i.title}
+                        </NavText>
+                    </NavItem>
+                )
+            })}
+           
+        </NavItem>
+              )
+          }
+      })
+  }
   render() {
     return (
       <SideNav style={{ background: '#212121', position: 'fixed' }}
@@ -43,14 +141,9 @@ class Sidnav extends Component {
                   </NavItem>
               )}  
 
-                    <NavItem eventKey=''>
-                        <NavIcon>
-                            <MDBIcon style={{color: '#fff'}} icon='home' size='2x' />
-                        </NavIcon>
-                        <NavText style={{color: '#fff'}} >
-                              Início
-                        </NavText>
-                    </NavItem>
+              {this.renderNav()}
+
+                   
               
               </SideNav.Nav>
               </SideNav>

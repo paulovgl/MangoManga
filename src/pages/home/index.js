@@ -1,11 +1,11 @@
 import React, {Component, Fragment} from 'react';
-import '../../App.css'
+import './home.css'
 import {Main} from '../../components/main'
 import {MMCard} from '../../components/card/'
 import {MDBRow, MDBCol} from 'mdbreact'
 
 
- export default class Delicia extends Component {
+ export default class Home extends Component {
 
 
   state = {
@@ -50,10 +50,9 @@ import {MDBRow, MDBCol} from 'mdbreact'
         <MDBRow>
           {
             this.state.manga.map((x, y) => {
-              return (
-                
-                <MDBCol lg='2' md='3' sm='6' >
-                  <MMCard key={`${y}manga`}title={x.title} image={x.image} chapter={x.chapter} /> 
+              return (        
+                <MDBCol key={`${y}manga`} lg='2' md='3' sm='6' >
+                  <MMCard title={x.title} id={x.id} image={x.image} chapter={x.chapter} /> 
                 </MDBCol>
             )
           })
@@ -72,8 +71,8 @@ import {MDBRow, MDBCol} from 'mdbreact'
             this.state.manga.slice(0).reverse().map((x, y) => {
               return (
                 
-                <MDBCol lg='2' md='3' sm='6' >
-                  <MMCard key={`${y}manga`}title={x.title} image={x.image} chapter={x.chapter} /> 
+                <MDBCol  key={`${y}mangaLast`} lg='2' md='3' sm='6' >
+                  <MMCard title={x.title} id={x.id} image={x.image} chapter={x.chapter} /> 
                 </MDBCol>
             )
           })
@@ -91,14 +90,14 @@ import {MDBRow, MDBCol} from 'mdbreact'
         <Main>
         <div className="App">
             <div>
-                <h5 class='text-left mb-3'>Continue ({this.state.manga.length})</h5>
+                <h5 className='text-left mb-3'>Continue ({this.state.manga.length})</h5>
 
                 
                 {this.countManga()}
 
             </div>
             <div>
-                <h5 class='text-left mb-3 mt-5'>Você não lê a um tempo ({this.state.manga.length})</h5>
+                <h5 className='text-left mb-3 mt-5'>Você não lê a um tempo ({this.state.manga.length})</h5>
 
                 
                 {this.countMangaLastTime()}

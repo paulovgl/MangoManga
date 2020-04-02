@@ -30,7 +30,7 @@ import {
   
   render(){
   return (   
-      <withRouter>
+      // <withRouter>
       <MDBNavbar color='red darken-2' dark expand='md' className={this.props.expanded === false ? "closed" : "opened"} >
           <MDBNavbarBrand>
             
@@ -72,7 +72,7 @@ import {
           </MDBNavbarNav>          
         </MDBCollapse>
       </MDBNavbar> 
-      </withRouter>  
+      // </withRouter>  
     );
   
   }
