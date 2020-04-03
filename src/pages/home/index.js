@@ -40,6 +40,12 @@ import {MDBRow, MDBCol} from 'mdbreact'
         image: 'https://unionleitor.top/assets/uploads/mangas/017f5320.jpg',
         chapter: 29  
       }, 
+      {
+        id: 6,
+        title: 'Dungeon Reset',
+        image: 'https://static3.mangalivre.com/capas/bVbDK_6TnBOqmH_8CB1AZg/9375/external_cover.jpg',
+        chapter: 19  
+      },
     ]
   }
 
@@ -90,14 +96,14 @@ import {MDBRow, MDBCol} from 'mdbreact'
         <Main>
         <div className="App">
             <div>
-                <h5 className='text-left mb-3'>Continue ({this.state.manga.length})</h5>
+                <h5 className='text-left mb-3' style={{fontWeight: 500}}>Continue ({this.state.manga.length})</h5>
 
                 
                 {this.countManga()}
 
             </div>
             <div>
-                <h5 className='text-left mb-3 mt-5'>Você não lê a um tempo ({this.state.manga.length})</h5>
+                <h5 className='text-left mb-3 mt-5' style={{fontWeight: 500}}>Você não lê a um tempo ({this.state.manga.length})</h5>
 
                 
                 {this.countMangaLastTime()}

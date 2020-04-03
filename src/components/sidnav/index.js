@@ -32,6 +32,13 @@ class Sidnav extends Component {
             eventKey: '',
         },
         {
+            type: 'unique',
+            title: 'Perfil',
+            icon: { size: '2x', icon: 'user' },
+            eventKey: 'profile',
+        },
+        
+        {
             type: 'multiple',
             title: 'Cadastro',
             eventKey: 'configure',
@@ -51,12 +58,13 @@ class Sidnav extends Component {
                 },
                 {
                     title: 'Gênero',
-                    eventKey: 'author/create', 
+                    eventKey: 'genero/create', 
                 },
                 {
                     title: 'Scan',
                     eventKey: 'scans/create', 
                 },
+                
             ]
         },
         {

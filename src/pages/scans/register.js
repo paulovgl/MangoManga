@@ -37,11 +37,11 @@ class RegisterScan extends Component {
           
           <MDBRow>
 
-            <MDBCol md='12' lg='5'>
+            <MDBCol md='12' lg='6'>
               <MMInput name='nome' label='Nome' onChange={this.listinput}/>
             </MDBCol>
 
-            <MDBCol md='12' lg='5'>
+            <MDBCol md='12' lg='6'>
               <MMInput name='nome' label='Link' onChange={this.listinput}/>
             </MDBCol>
 

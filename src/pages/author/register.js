@@ -29,23 +29,17 @@ class RegisterEditora extends Component {
       this.setState({ [name]: { ...this.state[name], value: value, } });      
   }
 
-  
-
   render (){
     return (
       <Fragment>
       <Main>
 
-        <MMCardView title='Cadastrar Editora'>
+        <MMCardView title='Cadastrar Autor'>
           
           <MDBRow>
 
-            <MDBCol md='12' lg='6'>
+            <MDBCol md='12' lg='12'>
               <MMInput name='nome' label='Nome' onChange={this.listinput}/>
-            </MDBCol>
-
-            <MDBCol md='12' lg='6'>
-              <MMInput name='nome' label='Link' onChange={this.listinput}/>
             </MDBCol>
 
           </MDBRow>

@@ -42,7 +42,7 @@ class MMCardView extends Component {
   render(){
     let {title, color, children, container, margin, main} = this.props 
     return (     
-      <div style={{paddingTop: this.props.padding ? this.props.padding : 20}} className={`${[container ? 'container ' : ' ',  margin  ? ' '+margin : ' ']}`}>
+      <div style={{paddingTop: this.props.padding ? this.props.padding : 20}} className={`${[container ? 'container ' : ' ',  margin  ? ' '+margin : ' ']} mb-2`}>
       <MDBCard style={{backgroundColor: "#fff" }}>       
         <MMCardTitle name={title} color={color}/>   
         <MDBCardBody style={{color: '#000'}}> 

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import {Main} from '../../components/main'
-import { MDBRow, MDBCol, MDBCard, MDBCardImage, MDBIcon} from 'mdbreact'
+import { MDBRow, MDBCol, MDBCard, MDBCardImage, MDBIcon, MDBCardBody} from 'mdbreact'
 import './manga.scss'
 import { StyleSheet, css } from 'aphrodite';
-
+import MMRating from '../../components/rating'
+import {MMButton} from '../../components/buttons'
 
 const styles = StyleSheet.create({
 
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
     height: 367,
     borderRadius: 6,
     position: 'relative',
-    marginBottom: '0.5em'
+    marginBottom: '1em'
   },
   genre:{
     padding: '0.3em',
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     fontSize: 30
   },
   mangaDescription:{
-    marginTop: 50,   
+    marginTop: 5,   
     fontSize: 14
   },
   chapterList: {
@@ -76,7 +77,40 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     // marginRight: 2,
     fontWeight: '500'
+  },
+  status: {
+    // backgroundColor: '#29ab87',
+    color: '#fff',
+    borderRadius: 7,
+    fontWeight: '500',
+    padding: '0.3em',
+    marginLeft: 2,
+    // marginRight: 2,  
+  },
+  mangaButton: {  
+    cursor: 'pointer',
+    textAlign: 'center',
+    fontWeight: 600,
+    color: '#FFF'
+  },
+  mangaAdd: {
+    backgroundColor: 'rgb(230, 74, 25)',
+    transitionDuration: '200ms',
+    ':hover':{
+      backgroundColor: 'rgba(230, 74, 25, 0.6)',
+      transitionDuration: '200ms',
+    }
+  },
+  mangaRemove: {
+    backgroundColor: 'rgba(62, 69, 81, 1)',
+    transitionDuration: '200ms',
+    ':hover':{
+      backgroundColor: 'rgba(62, 69, 81, 0.6)',
+      transitionDuration: '200ms',
+    }
   }
+  
+  
 });
 
 
@@ -95,6 +129,8 @@ export default class Manga extends Component {
          scans: [{ name: 'scansPROJECT', url: ''}],
          editora: [{name: 'Panini', url: 'https://loja.panini.com.br/panini/solucoes/Busca.aspx?fcp=29009'}],
          image: 'https://static3.mangalivre.com/capas/XzJfT6TjJArZeQjuoWyWSA/1751/external_cover.jpg',
+         status: 'Ativo',
+         rating: 3,         
          chapter: [
            {
              id: 1,
@@ -109,8 +145,41 @@ export default class Manga extends Component {
             number: 2             
           }
          ]      
-       }
-      ]
+       },
+       {
+        id: 2,
+        title: 'Dangeon Reset',
+        description: '[A Dungeon está resetando.] Quando a Dungeon é completamente explorada e suas armadilhas são ativadas, ela é resetada automaticamente para os próximos ‘jogadores’. Mas esses resets não funcionam em mim?! A única existência na dungeon que se tornou livre dos resets eternos da dungeon.',
+        genre: [
+          "Ação", 'Aventura', 'Fantasia'
+        ],
+        autor: [{name: 'Daul', url:''}],
+        scans: [{ name: 'NeoxScan', url: ''}],
+        editora: [{name: 'Ant Studio', url: ''}],
+        image: 'https://neoxscan.com/newsite/wp-content/uploads/2020/01/Dungeon-Reset-193x278.jpg',
+        status: 'Ativo',
+        rating: 4,         
+        chapter: [
+          {
+            id: 1,
+            date: '02/08/19',
+            title: 'Eu estou vivo?!',
+            number: 1             
+          },
+          {
+           id: 2,
+           date: '29/07/19',
+           title: 'Resetando',
+           number: 2             
+         }
+        ]      
+      }
+      ],
+      add: false,
+  }
+
+  addManga(){
+    this.setState({add: !this.state.add})  
   }
 
   
@@ -120,13 +189,23 @@ export default class Manga extends Component {
         <MDBRow>
           <MDBCol lg='3' md='12'>
             <div>
-              <MDBCard className={css(styles.card)}>
+              <MDBCard className={css(styles.card)} onClick={()=>{this.addManga()}}>
                     <MDBCardImage className="img-fluid" src={this.state.manga[0].image} waves />
+                    <MDBCardBody waves onClick={()=>{this.addManga()}} 
+                        className={`
+                          ${css(styles.mangaButton)} 
+                          ${this.state.add ? css(styles.mangaRemove) : css(styles.mangaAdd) }
+                        `}>
+                          {this.state.add ? 'Remover' : 'Adicionar'}
+                          
+                    </MDBCardBody>
               </MDBCard>
             </div>
           </MDBCol>
 
           <MDBCol lg='9' md='12'>
+
+              <MMRating initialRating={this.state.manga[0].rating} />
             
             <div>
               <div>
@@ -172,14 +251,22 @@ export default class Manga extends Component {
                 })
               }
               </div>
-             <p className={css(styles.mangaDescription)} > {this.state.manga[0].description}</p>
+
+              <div className='mt-3'>
+                <h6 style={{fontWeight: 400}}>
+                  Status: <span className={`${css(styles.status)} success-color`}>{this.state.manga[0].status}</span>
+                </h6>
+                 
+              </div>
+
+             <p className={`${css(styles.mangaDescription)} pt-0`} > {this.state.manga[0].description}</p>
             </div>
           </MDBCol>
         </MDBRow> 
 
         {/* <MDBRow> */}
-          <MDBCard>
-            <div className={`mb-3 ${css(styles.countChapter)}`}>{this.state.manga[0].chapter.length} Capítulo{this.state.manga[0].chapter.length > 1 ? 's' : ''}</div>
+          <MDBCard className='mb-2'>
+            <div className={` ${css(styles.countChapter)}`}>{this.state.manga[0].chapter.length} Capítulo{this.state.manga[0].chapter.length > 1 ? 's' : ''}</div>
              {
                this.state.manga[0].chapter.map((x,y)=>{
                  return (

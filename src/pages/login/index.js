@@ -15,8 +15,7 @@ import './inicio.scss'
     const { name, value } = event.target
     this.setState({
       [name]: value
-    })   
-    console.log(this.state[name]) 
+    })      
   }
 
   submitForm(){
