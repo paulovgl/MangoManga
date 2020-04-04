@@ -3,6 +3,7 @@ import {Main} from '../../components/main'
 import {MMCardView} from '../../components/card'
 import {MMInput, MMSelect, MMInputArea} from '../../components/formulario'
 import {MDBRow, MDBCol} from 'mdbreact'
+import { MMBtnReturn, MMBtnSubmit } from '../../components/buttons/index'
 
 class RegisterManga extends Component {
 
@@ -52,10 +53,10 @@ class RegisterManga extends Component {
         <MMCardView title='Cadastrar Mangá'>
           
           <MDBRow>
-            <MDBCol md='12' lg='5'>
+            <MDBCol md='12' lg='6'>
               <MMInput name='nome' label='Nome' onChange={this.listinput}/>
             </MDBCol>
-            <MDBCol md='12' lg='3'>
+            <MDBCol md='12' lg='6'>
             <MMSelect
               label='Editora:'
               name='editora'             
@@ -65,21 +66,39 @@ class RegisterManga extends Component {
               value={this.state.editora.value}
           />
             </MDBCol>
-            <MDBCol md='12' lg='3'>
+            <MDBCol md='12' lg='6'>
             <MMSelect
-              label='Scan:'
-              name='scan'             
-              selectTitle='Selecione a Scan'
+              label='Autor:'
+              name='autor'             
+              selectTitle='Selecione a Autor'
               onChange={this.handleSelectChange}
               options={this.state.scan.options} 
               value={this.state.scan.value}
           />
             </MDBCol>
+
+            <MDBCol md='12' lg='6'>
+            <MMSelect
+              label='Scan:'
+              name='scan'             
+              selectTitle='Selecione o Scan'
+              onChange={this.handleSelectChange}
+              options={this.state.scan.options} 
+              value={this.state.scan.value}
+          />
+            </MDBCol>
+
             <MDBCol md='12' lg='12'>
            <MMInputArea label='Descrição:' name='decription' onChange={this.listinput} rows='4'  />
 
-            </MDBCol>
+            </MDBCol>          
+
           </MDBRow>
+          <center>
+              <MMBtnReturn />
+              <MMBtnSubmit className='red darken-2' />
+          </center>
+          
 
         </MMCardView>
         

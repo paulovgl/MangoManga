@@ -12,6 +12,8 @@ import AuthorRegister from "../../pages/author/register"
 import SearchPage from '../../pages/search'
 import ProfileUpdate from '../../pages/profile/edit'
 import Profile from '../../pages/profile/'
+import NotFound from '../../pages/404'
+import Index from '../../pages/index'
 
 
 const Routes  = () => {
@@ -21,9 +23,9 @@ const Routes  = () => {
 
     <Switch>
 
-      <Route path='/login' exact component = {Login}  />  
+      {/* <Route path='/login' exact component = {Login}  />   */}
       <Route path='/' exact component={Home} />
-      <Route path='/registro' exact component={Registro} />
+      {/* <Route path='/registro' exact component={Registro} /> */}
       <Route path='/profile/edit' exact component={ProfileUpdate} />
       <Route path='/profile' exact component={Profile} />
       {/* Rotas Manga */}
@@ -40,6 +42,10 @@ const Routes  = () => {
       {/* Search Search */}
       <Route path='/search' exact component={SearchPage} />
       <Route path='/search/:type/:name' exact component={SearchPage} />
+      <Route path='/login' exact component={Index} />
+
+      {/* Rota Error */}
+      <Route component = {NotFound} />
 
 
     </Switch>

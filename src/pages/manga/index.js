@@ -4,7 +4,7 @@ import { MDBRow, MDBCol, MDBCard, MDBCardImage, MDBIcon, MDBCardBody} from 'mdbr
 import './manga.scss'
 import { StyleSheet, css } from 'aphrodite';
 import MMRating from '../../components/rating'
-import {MMButton} from '../../components/buttons'
+import moment from 'moment';
 
 const styles = StyleSheet.create({
 
@@ -108,6 +108,15 @@ const styles = StyleSheet.create({
       backgroundColor: 'rgba(62, 69, 81, 0.6)',
       transitionDuration: '200ms',
     }
+  },
+  chapterNew: {
+    marginRight: 8,
+    color: '#fff',
+    fontSize: 13,
+    backgroundColor: 'rgb(230, 74, 25)',
+    borderRadius: 7,
+    padding: '0.3em',
+    fontWeight: '500',
   }
   
   
@@ -140,46 +149,54 @@ export default class Manga extends Component {
            },
            {
             id: 2,
-            date: '29/07/19',
+            date: '04/04/2020',
             title: 'Yunoo eu te amo!!',
             number: 2             
           }
          ]      
        },
-       {
-        id: 2,
-        title: 'Dangeon Reset',
-        description: '[A Dungeon está resetando.] Quando a Dungeon é completamente explorada e suas armadilhas são ativadas, ela é resetada automaticamente para os próximos ‘jogadores’. Mas esses resets não funcionam em mim?! A única existência na dungeon que se tornou livre dos resets eternos da dungeon.',
-        genre: [
-          "Ação", 'Aventura', 'Fantasia'
-        ],
-        autor: [{name: 'Daul', url:''}],
-        scans: [{ name: 'NeoxScan', url: ''}],
-        editora: [{name: 'Ant Studio', url: ''}],
-        image: 'https://neoxscan.com/newsite/wp-content/uploads/2020/01/Dungeon-Reset-193x278.jpg',
-        status: 'Ativo',
-        rating: 4,         
-        chapter: [
-          {
-            id: 1,
-            date: '02/08/19',
-            title: 'Eu estou vivo?!',
-            number: 1             
-          },
-          {
-           id: 2,
-           date: '29/07/19',
-           title: 'Resetando',
-           number: 2             
-         }
-        ]      
-      }
+      //  {
+      //   id: 2,
+      //   title: 'Dangeon Reset',
+      //   description: '[A Dungeon está resetando.] Quando a Dungeon é completamente explorada e suas armadilhas são ativadas, ela é resetada automaticamente para os próximos ‘jogadores’. Mas esses resets não funcionam em mim?! A única existência na dungeon que se tornou livre dos resets eternos da dungeon.',
+      //   genre: [
+      //     "Ação", 'Aventura', 'Fantasia'
+      //   ],
+      //   autor: [{name: 'Daul', url:''}],
+      //   scans: [{ name: 'NeoxScan', url: ''}],
+      //   editora: [{name: 'Ant Studio', url: ''}],
+      //   image: 'https://neoxscan.com/newsite/wp-content/uploads/2020/01/Dungeon-Reset-193x278.jpg',
+      //   status: 'Ativo',
+      //   rating: 4,         
+      //   chapter: [
+      //     {
+      //       id: 1,
+      //       date: '02/08/2019',
+      //       title: 'Eu estou vivo?!',
+      //       number: 1             
+      //     },
+      //     {
+      //      id: 2,
+      //      date: '04/04/2020',
+      //      title: 'Resetando',
+      //      number: 2             
+      //    }
+      //   ]      
+      // }
       ],
       add: false,
   }
 
   addManga(){
     this.setState({add: !this.state.add})  
+  }
+
+  showNew(data){
+    let today = moment().startOf('day');
+    console.log(today)
+    data = moment(data, 'DD/MM/YYYY').format('YYYY-MM-DD');    
+    const dias = moment.duration(today.diff(data)).asDays();   
+    if(dias < 5) return (<span className={css(styles.chapterNew)}>Novo</span>)   
   }
 
   
@@ -287,6 +304,7 @@ export default class Manga extends Component {
                   </MDBCol> 
                   <MDBCol md='3' className='align-middle'>
                     <div className='text-right'>
+                      {this.showNew(x.date)}
                       <a className='chaptherView'><MDBIcon icon='eye' size='1x' /></a>
                     </div>
                   </MDBCol>

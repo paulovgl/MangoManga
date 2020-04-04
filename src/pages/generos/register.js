@@ -3,6 +3,7 @@ import {Main} from '../../components/main'
 import {MMCardView} from '../../components/card'
 import { MMInput } from '../../components/formulario'
 import {MDBRow, MDBCol} from 'mdbreact'
+import {MMBtnReturn, MMBtnSubmit} from '../../components/buttons'
 
 class RegisterEditora extends Component {
 
@@ -43,6 +44,11 @@ class RegisterEditora extends Component {
             </MDBCol>
 
           </MDBRow>
+
+            <center>
+              <MMBtnReturn />
+              <MMBtnSubmit  />
+            </center>
 
         </MMCardView>
         

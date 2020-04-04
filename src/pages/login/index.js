@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import {MDBCard, MDBContainer, MDBRow, MDBCol, MDBCardBody } from 'mdbreact';
 import {MMButton} from '../../components/buttons/index.js'
 import './inicio.scss'

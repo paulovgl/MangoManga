@@ -3,6 +3,7 @@ import {Main} from '../../components/main'
 import {MMCardView} from '../../components/card'
 import { MMInput } from '../../components/formulario'
 import {MDBRow, MDBCol} from 'mdbreact'
+import {MMBtnReturn, MMBtnSubmit} from '../../components/buttons'
 
 class RegisterScan extends Component {
 
@@ -42,10 +43,15 @@ class RegisterScan extends Component {
             </MDBCol>
 
             <MDBCol md='12' lg='6'>
-              <MMInput name='nome' label='Link' onChange={this.listinput}/>
+              <MMInput name='nome' label='URL/Pagina de Informação' onChange={this.listinput}/>
             </MDBCol>
 
           </MDBRow>
+
+          <center>
+              <MMBtnReturn />
+              <MMBtnSubmit  />
+            </center>
 
         </MMCardView>
         

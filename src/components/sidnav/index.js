@@ -9,7 +9,7 @@ class Sidnav extends Component {
 
   state = {
     selected: 'home',
-    expanded: false
+    // expanded: false
   };
 
   onSelect = (selected) => {
@@ -18,9 +18,9 @@ class Sidnav extends Component {
     this.props.history.push(to);
 };  
 
-  onToggle = (expanded) => {
-      this.setState({ expanded: expanded });
-  };
+    onToggle = (expanded) => {
+        this.setState({ expanded: expanded });
+    }
    
   renderNav = () => {
       const nav = [
@@ -36,6 +36,12 @@ class Sidnav extends Component {
             title: 'Perfil',
             icon: { size: '2x', icon: 'user' },
             eventKey: 'profile',
+        },
+        {
+            type: 'unique',
+            title: 'Buscar',
+            icon: { size: '2x', icon: 'search' },
+            eventKey: 'search',
         },
         
         {
@@ -129,6 +135,7 @@ class Sidnav extends Component {
       })
   }
   render() {
+    // console.log(this.props.expanded)
     return (
       <SideNav style={{ background: '#212121', position: 'fixed' }}
       onSelect={this.onSelect}
@@ -139,7 +146,7 @@ class Sidnav extends Component {
           {/* Aqui entra a logo */}
           {this.props.expanded ? (
               <NavItem eventKey="" className='text-center' style={{ marginBottom: '25%' }}>
-                  <img src={logo} style={{ paddingTop: 25 }} width='40em' height='auto' alt='logomarca' />
+                  <img src={logo} style={{ paddingTop: 25 }} width='55em' height='auto' alt='logomarca' />
               </NavItem>
           ) : (
                   <NavItem eventKey="" style={{ marginBottom: '25%', marginTop: '15%' }}>

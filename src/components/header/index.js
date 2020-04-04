@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import {
-  MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBFormInline, MDBIcon,
-  MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBBtn, MDBDataTable, MDBSideNavCat
+  MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavbarToggler, MDBCollapse, MDBIcon,
+  MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBBtn,
   } from "mdbreact"; 
 
-  import { Link, withRouter} from 'react-router-dom';
+  import {withRouter} from 'react-router-dom';
   import './header.scss' 
-  import MMSearch from '../../components/pesquisa'
+  import {MMSwitchTheme} from '../../components/switch';
+
+
   class Header extends Component {
 
     constructor(props){
@@ -24,7 +26,10 @@ import {
 
   clickTogle = () => {
     this.props.parentCallback(this.props.expanded === false ? true : false);
-    // localStorage.setItem('options', JSON.stringify({sidnavExpanded: !this.props.expanded}))
+    let options = localStorage.getItem('options');
+    options = JSON.parse(options);
+    options.sidnavExpanded = !this.props.expanded
+    localStorage.setItem('options', JSON.stringify(options))
             
   }
   
@@ -40,10 +45,10 @@ import {
         <MDBCollapse id="navbarCollapse3" isOpen={this.state.isOpen} navbar>
         <MDBNavbarNav left>
             <MDBNavItem>    
-              <MDBBtn onClick={this.clickTogle} color='transparent' style={{padding:'0', color: "#fff"}} >
+              <MDBBtn onClick={()=> this.clickTogle()} color='transparent' style={{padding:'0', color: "#fff"}} >
                 <MDBIcon size='2x' icon='bars'/>
               </MDBBtn>   
-                <span className='pl-3' style={{color:"#fff", fontWeight:"bold"}}>MangoManga</span>
+                <span className='pl-3' style={{color:"#fff", fontWeight:"bold",  fontFamily: 'Comic Neue'}}>MangoManga</span>
             </MDBNavItem>           
           </MDBNavbarNav>           
 
@@ -61,19 +66,23 @@ import {
           <MDBNavbarNav right>
             
           <MDBNavItem>         
-           <a class="nav-link waves-effect waves-light" onClick={()=> this.props.history.push('/search')}>
-           <i class="fas fa-search"></i>
+           <a className="nav-link waves-effect waves-light" onClick={()=> this.props.history.push('/search')}>
+           <i className="fas fa-search"></i>
            </a>     
-          </MDBNavItem>          
+          </MDBNavItem> 
+
+          <MDBNavItem>
+            <MMSwitchTheme onChange={this.props.changeTheme} status={this.props.stateThema}  />
+          </MDBNavItem>         
          
           <MDBNavItem>
               <MDBDropdown>
                 <MDBDropdownToggle nav caret>
                   <MDBIcon icon="user" className="mr-1" />
                 </MDBDropdownToggle>
-                <MDBDropdownMenu className="dropdown-default" right>
+                <MDBDropdownMenu className="dropdown-default" right>                  
                 <MDBDropdownItem onClick={()=> {this.props.history.push('/profile/edit')}}>Editar Usuário</MDBDropdownItem>
-                  <MDBDropdownItem onClick={()=> {this.props.history.push('/login')}}>Sair</MDBDropdownItem>
+                <MDBDropdownItem onClick={()=> {this.props.history.push('/login')}}>Sair</MDBDropdownItem>
                 </MDBDropdownMenu>
               </MDBDropdown>
             </MDBNavItem>

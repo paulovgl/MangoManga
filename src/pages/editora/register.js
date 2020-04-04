@@ -3,6 +3,7 @@ import {Main} from '../../components/main'
 import {MMCardView} from '../../components/card'
 import { MMInput } from '../../components/formulario'
 import {MDBRow, MDBCol} from 'mdbreact'
+import {MMBtnReturn, MMBtnSubmit} from '../../components/buttons'
 
 class RegisterEditora extends Component {
 
@@ -45,10 +46,14 @@ class RegisterEditora extends Component {
             </MDBCol>
 
             <MDBCol md='12' lg='6'>
-              <MMInput name='nome' label='Link' onChange={this.listinput}/>
+              <MMInput type='url' name='nome' label='Página da Editora/URL de informação' onChange={this.listinput}/>
             </MDBCol>
 
           </MDBRow>
+            <center>
+              <MMBtnReturn />
+              <MMBtnSubmit  />
+            </center>
 
         </MMCardView>
         

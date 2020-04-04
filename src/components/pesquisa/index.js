@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBInput, MDBCol, MDBFormInline, MDBIcon } from "mdbreact";
+import { MDBFormInline, MDBIcon } from "mdbreact";
 import {StyleSheet, css} from 'aphrodite'
 import {withRouter} from 'react-router'
 

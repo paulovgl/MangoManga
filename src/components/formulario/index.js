@@ -1,38 +1,52 @@
 import React, {Component} from 'react';
 import {StyleSheet, css} from 'aphrodite'
+import { MMTheme} from '../theme';
 
-const styles = () => StyleSheet.create({
+
+const styles = (theme) => StyleSheet.create({
+    swsInput: {
+    borderColor: theme.input.text.border,
+    background: theme.input.text.background,    
+    color: theme.input.text.color,
+    '::placeholder': {
+      color: theme.input.text.placeholder.color,     
+    }   
+  },
+  swsLabel: {
+    color: theme.input.label.color,
+    fontWeight: '500'
+  },
   swsSelect:{
-    borderColor: '#eee',
-    background: '#fff',
-    color: 'rgb(62, 69, 81)'
+    borderColor: theme.input.select.border,
+    background:  theme.input.text.background,
+    color: theme.input.text.color,
   },
   swsInputArea:{
-    color: 'rgb(62, 69, 81)', 
-    background:'#fff',
+    borderColor: theme.input.textarea.border,
+    background:  theme.input.textarea.background,
+    color: theme.input.textarea.color,
     '::placeholder': {
-      color: 'rgba(62, 69, 81,0.7)',     
+      color: theme.input.textarea.placeholder.color,      
     }
-  }
-
+  },
 })
 
 
 class MMInput extends Component {
-  // static contextType = SWSTheme
+  static contextType = MMTheme
     render() {
     let props = this.props
-    // let theme = this.context
+    let theme = this.context   
    
     return (
       <>
          <div className="form-group">
 
-          <label htmlFor={props.id}><span className='control-la bel' style={{ color: '#d32f2f', fontWeight: '500' }} >{props.label}:</span ></label>         
+          <label htmlFor={props.id}><span className={` ${css(styles(theme).swsLabel)} control-label `} >{props.label}:</span ></label>         
           <input
             style={{onHover:{color:'red'}, }}
             type={props.type}
-            className={`  form-control form-control-md input ${props.validation ? 'validate' : ''} ${props.className ? props.className : ''}`}
+            className={` ${css(styles(theme).swsInput)}   form-control form-control-md input ${props.validation ? 'validate' : ''} ${props.className ? props.className : ''}`}
             id={props.id}
             readOnly={props.readOnly ? true : false}
             name={props.name}
@@ -47,6 +61,7 @@ class MMInput extends Component {
 }
 
 class MMSelect extends Component {
+  static contextType = MMTheme
 
   renderoption(props){
     if(!props.observe){
@@ -77,10 +92,11 @@ class MMSelect extends Component {
 
   render(){   
    let props = this.props
+   let theme = this.context
    return (
      <div className="form-group">
-     <label style={{color: '#d32f2f', fontWeight: '500' }}  htmlFor={props.id}><span className='control-label' >{props.label}</span ></label>
-     <select disabled={props.disabled ? props.disabled : false} name={props.name} value={props.value} className={`browser-default custom-select select ${css(styles().swsSelect)}`} onChange={props.onChange} placeholder={props.selectTitle}>     
+     <label   htmlFor={props.id}><span className={` ${css(styles(theme).swsLabel)} control-label `}>{props.label}</span ></label>
+     <select disabled={props.disabled ? props.disabled : false} name={props.name} value={props.value} className={`browser-default custom-select select ${css(styles(theme).swsSelect)}`} onChange={props.onChange} placeholder={props.selectTitle}>     
       <option style={{color: 'rgb(62, 69, 81)'}}>{props.selectTitle}</option>
       {this.renderoption(props)}    
     </select>
@@ -91,19 +107,21 @@ class MMSelect extends Component {
 }
 
 class MMInputArea extends Component {
+  static contextType = MMTheme
   render(){
+  let theme = this.context
   let props = this.props  
   return (
     <div>
         <div className="form-group">
-        <label style={{color: '#d32f2f', fontWeight: '500' }}><span className='control-label' >{props.label}</span ></label>
+        <label  htmlFor={props.id} > <span className={` ${css(styles(theme).swsLabel)} control-label `} >{props.label}</span ></label>
         <textarea  
           placeholder = {props.placeholder ? props.placeholder : ''}         
           id={props.id}
           value={props.value}
           readOnly={props.readOnly ? true : false}
           onChange={props.onChange}
-          className={`form-control textarea ${props.validation ? 'validate' : ''} ${css(styles().swsInputArea)}`}
+          className={ `form-control textarea ${props.validation ? 'validate' : ''} ${css(styles(theme).swsInputArea)}`}
           name={props.name}
           rows={props.rows ? props.rows : '3'}
         >

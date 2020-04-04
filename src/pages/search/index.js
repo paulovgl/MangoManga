@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
   btnPaginator: {
     color: '#FFF',
     fontWeight: '500',
-    // 
     transitionDuration: '300ms',
     ':hover':{
       backgroundColor: 'rgba(211, 47, 47, 0.2)',
@@ -43,11 +42,11 @@ export default class MMSearch extends Component {
     this.state = {     
         searchInput: '',
         alphabet: '',
-        currentPage: 1,
+        currentPage: 1,   // Actual page init    
         pageBound: 3,
         upperPageBound: 3,
         lowerPageBound: 0,
-    
+        paginate: 10,   
     
         manga: [
           {
@@ -122,7 +121,8 @@ export default class MMSearch extends Component {
             image: 'https://static3.mangalivre.com/capas/VQpv4xINwz2pmep2VGpqkg/2330/external_cover.jpg',
             chapter: 290
           },
-        ],        
+        ], 
+        result:[],    
       }      
       // this.MMPagination().handleClick() = this.MMPagination().handleClick().bind(this)
     }
@@ -136,6 +136,9 @@ export default class MMSearch extends Component {
   }
   prepareAlphabets = () => {
     let result = [];
+      result.push(
+        <button type="button" className={`btn btn-sm red darken-2 white-text `} key={'itodf'} onClick={this.onAlphabetClick} value={''} >{`...`}</button>
+      )
     for (let i = 65; i < 91; i++) {
       result.push(
         <button type="button" className={`btn btn-sm red darken-2 white-text `} key={i} onClick={this.onAlphabetClick} value={String.fromCharCode(i)} >{String.fromCharCode(i)}</button>
@@ -143,41 +146,30 @@ export default class MMSearch extends Component {
     }
     return result;
   }
+
+  filterElement = (result, indexOfLastTodo, indexOfFistTodo) => {
+    let data = result.slice(indexOfFistTodo, indexOfLastTodo);
+     return data;
+  }
+
   elementContainsSearchString = (searchInput, element) => (searchInput ? element.title.toLowerCase().includes(searchInput.toLowerCase()) : false);
-  filterItems = (itemList) => {
+  filterItems = (itemList, currentPage, paginate ) => {
     let result = [];
+    const indexOfLastTodo = currentPage * paginate;
+    const indexOfFistTodo = indexOfLastTodo - paginate;
     const { searchInput, alphabet } = this.state;
     if (itemList && (searchInput || alphabet)) {
       result = itemList.filter((element) => (element.title.charAt(0).toLowerCase() === alphabet.toLowerCase()) ||
         this.elementContainsSearchString(searchInput, element));
+        result = this.filterElement(result, indexOfLastTodo, indexOfFistTodo); 
+        return result;       
     } else {
-      result = itemList || [];
-    }
-
-    return (
-      <>
-        <MDBRow className={'mt-3'}>
-          {
-            result?.map((x, y) => {
-              return (
-                <MDBCol key={`${y}manga`} lg='2' md='3' sm='6' >
-                  <MMCard title={x.title} id={x.id} image={x.image} chapter={x.chapter} />
-                </MDBCol>
-              )
-            })
-          }
-        </MDBRow>
-        <div className='justify-content-center'>
-            {this.MMPagination(result)}
-        </div>
-        
-      </>
-    )
+      result = this.filterElement(itemList, indexOfLastTodo, indexOfFistTodo) || [];       
+      return result;      
+    } 
   }
-
-
-
-  MMPagination = (result) => {
+   
+  MMPagination = (result, filtered) => {
     ///render numbers 
     const handleClick = (event) => {
       // console.log(event)
@@ -196,9 +188,9 @@ export default class MMSearch extends Component {
 
     const btnIncrementClick = (event) => {
       this.setState({
-        upperPageBound: this.state.upperPageBound + this.state.pageBound,
         lowerPageBound: this.state.lowerPageBound + this.state.pageBound,
-        currentPage: this.state.upperPageBound + this.state.pageBound,
+        upperPageBound: this.state.upperPageBound + this.state.pageBound,       
+        currentPage: this.state.upperPageBound + 1,
       })
     }
 
@@ -215,21 +207,22 @@ export default class MMSearch extends Component {
     };
 
     const prevButtonClick = (event) => {
-      if ((this.state.currentPage - 1) % this.state.pageBound === 0) {
+      if((this.state.currentPage -1)%this.state.pageBound === 0 ){
         this.setState({
           upperPageBound: this.state.upperPageBound - this.state.pageBound,
           lowerPageBound: this.state.lowerPageBound - this.state.pageBound,
-          currentPage: this.state.currentPage - 1
+          currentPage : this.state.currentPage - 1
         });
-      }
+      } 
       this.setState({
-        currentPage: this.state.currentPage - 1,
+        currentPage: this.state.currentPage - 1
       })
     }
+  
 
-    
+    // result = result.filter(filtered)
     const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(result.length / 10); i++) {
+    for (let i = 1; i <= Math.ceil(result.length / this.state.paginate); i++) {
       pageNumbers.push(i);
     }
 
@@ -267,10 +260,10 @@ export default class MMSearch extends Component {
     const nextPage = () => {
       return (
         <MDBPageItem className={` border black rounded border-light ${css(styles.btnPaginator)} `}
-          disabled={Math.ceil(result.length / 10) === this.state.currentPage ? 1 : 0}
+          disabled={Math.ceil(result.length / this.state.paginate) === this.state.currentPage ? true : false}
           onClick={() => nextButtonClick()}
         >
-          <MDBPageNav  className={`${css(styles.btnPaginator)}`} >
+          <MDBPageNav  className={`${css(styles.btnPaginator)} waves`} >
             {'Próxima'}
           </MDBPageNav>
         </MDBPageItem>
@@ -294,7 +287,7 @@ export default class MMSearch extends Component {
 
     if (pageNumbers.length > this.state.upperPageBound) {
       pageIncrementBtn =
-        <MDBPageItem className={css(styles.btnPaginator)} onClick={() => btnIncrementClick()} >
+        <MDBPageItem className={`border black rounded border-light ${css(styles.btnPaginator)} `} onClick={() => btnIncrementClick()} >
           <MDBPageNav className={css(styles.btnPaginator)} >
             &hellip;
             </MDBPageNav>
@@ -305,7 +298,7 @@ export default class MMSearch extends Component {
 
     if (this.state.lowerPageBound >= 1) {
       pageDecrementBtn =
-        <MDBPageItem className={css(styles.btnPaginator)} onClick={() => btnDecrementClick()} >
+        <MDBPageItem className={`border black rounded border-light ${css(styles.btnPaginator)} `} onClick={() => btnDecrementClick()} >
           <MDBPageNav className={css(styles.btnPaginator)} >
             &hellip;
             </MDBPageNav>
@@ -321,7 +314,34 @@ export default class MMSearch extends Component {
         {nextPage()}
       </MDBPagination>
     )
-  }
+  };
+
+  renderManga = (result) => {
+    if(result.length > 0){
+      return (
+        <>
+          <MDBRow className={'mt-3'}>
+            {
+              result?.map((x, y) => {
+                return (
+                  <MDBCol key={`${y}manga`} lg='2' md='3' sm='6' >
+                    <MMCard title={x.title} id={x.id} image={x.image} chapter={x.chapter} />
+                  </MDBCol>
+                )
+              })
+            }
+          </MDBRow>  
+        </>
+      )
+    }
+    else{
+      return (
+        <h3>Não foram encontrados mangás</h3>
+      )
+    }
+    };    
+    
+  
 
   render() {
     // const itemList = undefined;
@@ -336,8 +356,12 @@ export default class MMSearch extends Component {
           <div >
             {this.prepareAlphabets()}
             {/* <ul> */}
-            {this.filterItems(this.state.manga)}
+            {this.renderManga(this.filterItems(this.state.manga, this.state.currentPage ,this.state.paginate))}
+            {/* {} */}
             {/* </ul> */}
+            <div className='justify-content-center'>
+            {this.MMPagination(this.state.manga, this.filterItems(this.state.manga, this.state.currentPage ,this.state.paginate))}
+            </div>
           </div>
         </Fragment>
       </Main>
