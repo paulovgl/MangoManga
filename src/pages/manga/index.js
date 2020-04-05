@@ -5,6 +5,8 @@ import './manga.scss'
 import { StyleSheet, css } from 'aphrodite';
 import MMRating from '../../components/rating'
 import moment from 'moment';
+import {MMTabs} from '../../components/tabs'
+import {MMComments} from '../../components/comments/'
 
 const styles = StyleSheet.create({
 
@@ -129,7 +131,7 @@ export default class Manga extends Component {
     manga: [
       {
          id: 1,
-         title: 'Black Clover',
+         title: 'Black Clover ',
          description: 'Em um mundo em que até as tarefas mais simples do dia a dia são feitas com o uso de magia, quem não consegue usá-la é tratado como nada! Esta é a vida de Asta, um jovem que mesmo sem um pingo de magia, sonha em se tornar o Mago Imperador, o mais forte de todos os magos! Com muito esforço e trabalho duro, será ele capaz de atingir seus objetivos e superar seu genial rival e amigo de infância, Yuno?!!',
          genre: [
            "Ação", 'Aventura', 'Fantasia', 'Magia', 'Shounen'
@@ -199,6 +201,53 @@ export default class Manga extends Component {
     if(dias < 5) return (<span className={css(styles.chapterNew)}>Novo</span>)   
   }
 
+
+  countChapter(){
+    const count = this.state.manga[0].chapter.length
+
+    if(count > 1){
+      return `${count} Capítulos`
+    }
+    else{
+      return `${count} Capítulo`
+    }    
+  }
+
+  showList(){
+    return (
+      <MDBCard className='mb-2'>
+      {/* <div className={` ${css(styles.countChapter)}`}>{this.state.manga[0].chapter.length} Capítulo{this.state.manga[0].chapter.length > 1 ? 's' : ''}</div> */}
+       {
+         this.state.manga[0].chapter.map((x,y)=>{
+           return (
+            <MDBRow key={`${y}cc`} className='align-middle mt-2 mb-2'>
+            <MDBCol md='9' className='align-middle' >
+              <div className={css(styles.chapterList)} >
+                <div className={css(styles.chapterDate)}>
+                 {x.date}
+                </div>
+                <div className='ml-4 mt-1'>
+                  <h6 className={css(styles.chapterNumber)}>Capítulo Nº: {x.number}</h6>
+                </div>
+                <div className='ml-4 mt-1'>
+                  <h6 className={css(styles.chapterTitle)}>{x.title}</h6>
+                </div> 
+                              
+              </div>                   
+            </MDBCol> 
+            <MDBCol md='3' className='align-middle'>
+              <div className='text-right'>
+                {this.showNew(x.date)}
+                <a className='chaptherView'><MDBIcon icon='eye' size='1x' /></a>
+              </div>
+            </MDBCol>
+            </MDBRow>
+           )
+         })
+       }
+    </MDBCard>  
+    )
+  }
   
   render() {
     return (
@@ -280,40 +329,11 @@ export default class Manga extends Component {
             </div>
           </MDBCol>
         </MDBRow> 
-
-        {/* <MDBRow> */}
-          <MDBCard className='mb-2'>
-            <div className={` ${css(styles.countChapter)}`}>{this.state.manga[0].chapter.length} Capítulo{this.state.manga[0].chapter.length > 1 ? 's' : ''}</div>
-             {
-               this.state.manga[0].chapter.map((x,y)=>{
-                 return (
-                  <MDBRow key={`${y}cc`} className='align-middle mt-2 mb-2'>
-                  <MDBCol md='9' className='align-middle' >
-                    <div className={css(styles.chapterList)} >
-                      <div className={css(styles.chapterDate)}>
-                       {x.date}
-                      </div>
-                      <div className='ml-4 mt-1'>
-                        <h6 className={css(styles.chapterNumber)}>Capítulo Nº: {x.number}</h6>
-                      </div>
-                      <div className='ml-4 mt-1'>
-                        <h6 className={css(styles.chapterTitle)}>{x.title}</h6>
-                      </div> 
-                                    
-                    </div>                   
-                  </MDBCol> 
-                  <MDBCol md='3' className='align-middle'>
-                    <div className='text-right'>
-                      {this.showNew(x.date)}
-                      <a className='chaptherView'><MDBIcon icon='eye' size='1x' /></a>
-                    </div>
-                  </MDBCol>
-                  </MDBRow>
-                 )
-               })
-             }
-          </MDBCard>
         
+
+          <MMTabs data={[
+            {name: this.countChapter(), component: this.showList() },
+            {name: 'Comentários', component: <MMComments />}]} />   
 
       </Main>
     )

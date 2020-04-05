@@ -42,8 +42,9 @@ class MMInput extends Component {
       <>
          <div className="form-group">
 
-          <label htmlFor={props.id}><span className={` ${css(styles(theme).swsLabel)} control-label `} >{props.label}:</span ></label>         
+          {props.label ?  <label htmlFor={props.id}><span className={` ${css(styles(theme).swsLabel)} control-label `} >{props.label}:</span ></label>  : ''}       
           <input
+            onKeyDown={props.onKeyDown? props.onKeyDown : '' }
             style={{onHover:{color:'red'}, }}
             type={props.type}
             className={` ${css(styles(theme).swsInput)}   form-control form-control-md input ${props.validation ? 'validate' : ''} ${props.className ? props.className : ''}`}

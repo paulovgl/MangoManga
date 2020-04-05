@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch} from "react-router-dom";
-import Login from "../../pages/login/";
+// import Login from "../../pages/login/";
 import Home from "../../pages/home/"
-import Registro from "../../pages/registro/"
+// import Registro from "../../pages/registro/"
 import Manga from "../../pages/manga/"
 import MangaRegister from "../../pages/manga/register"
 import ScanRegister from "../../pages/scans/register"

@@ -3,10 +3,22 @@ import './home.css'
 import {Main} from '../../components/main'
 import {MMCard} from '../../components/card/'
 import {MDBRow, MDBCol} from 'mdbreact'
+import {StyleSheet, css} from 'aphrodite'
+import {MMTheme} from '../../components/theme'
+
+
+
+const styles = (theme) => StyleSheet.create({
+  cardSectionT:{
+    color: theme.cards.cardManga.section.title.color,
+    fontWeight: 500,    
+  }
+})
+
 
 
  export default class Home extends Component {
-
+  static contextType = MMTheme
 
   state = {
     manga: [
@@ -90,20 +102,19 @@ import {MDBRow, MDBCol} from 'mdbreact'
   }
 
   render (){
-
+    let theme = this.context
     return (
       <Fragment>
         <Main>
-        <div className="App">
+        <div className="">
             <div>
-                <h5 className='text-left mb-3' style={{fontWeight: 500}}>Continue ({this.state.manga.length})</h5>
+                <h5 className={`text-left mb-3 ${css(styles(theme).cardSectionT)} `} >Continue ({this.state.manga.length})</h5>
 
-                
                 {this.countManga()}
 
             </div>
             <div>
-                <h5 className='text-left mb-3 mt-5' style={{fontWeight: 500}}>Você não lê a um tempo ({this.state.manga.length})</h5>
+                <h5 className={`${css(styles(theme).cardSectionT)} text-left mb-3 mt-5 `}>Você não lê a um tempo ({this.state.manga.length})</h5>
 
                 
                 {this.countMangaLastTime()}
@@ -111,24 +122,7 @@ import {MDBRow, MDBCol} from 'mdbreact'
             </div>
         </div>
         </Main>
-      </Fragment>
-     
-    //   <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Delicia
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
+      </Fragment>   
     )
   }
 }

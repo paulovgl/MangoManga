@@ -11,15 +11,19 @@ export const themes = {
         color: '#d32f2f',        
       },
       text: {
-        border: '#eee',
+        border: '#f57600',
         background: 'rgba(255,255,255, 0.5)',
         color: 'rgb(62, 69, 81)',
         placeholder: {
           color: 'rgba(62, 69, 81,0.7)'
+        },    
+        focus:{
+          outline:'none',
+          boxShadow: '0px 0px 4px  #f57600'          
         }
       },
       select: {
-        border: '#fff',
+        border: '#f57600',
         background: '#fff',
         color: 'rgb(62, 69, 81)',
         placeholder: { 
@@ -27,7 +31,8 @@ export const themes = {
         } 
       },
       textarea:{
-        color: '#fff',
+        border: '#f57600',
+        color: 'rgb(62, 69, 81)',
         background: '#fff',
         placeholder: {
           color: 'rgba(62, 69, 81,0.7)'
@@ -44,6 +49,13 @@ export const themes = {
           background: '#fff',
           color: 'rgba(62, 69, 81)',
         },        
+      },
+      cardManga:{
+        section:{
+          title:{
+            color: 'rgba(62, 69, 81, 1)'
+          }
+        }
       }
             
     }
@@ -91,6 +103,13 @@ export const themes = {
           color: '#fff',
           background: '#3e4551',
         },  
+      },
+      cardManga:{
+        section:{
+            title:{
+              color: 'rgba(255,255,255,1)',
+          }
+        }
       }      
     }
   }

@@ -48,7 +48,7 @@ import {
               <MDBBtn onClick={()=> this.clickTogle()} color='transparent' style={{padding:'0', color: "#fff"}} >
                 <MDBIcon size='2x' icon='bars'/>
               </MDBBtn>   
-                <span className='pl-3' style={{color:"#fff", fontWeight:"bold",  fontFamily: 'Comic Neue'}}>MangoManga</span>
+                <span className='pl-3' style={{fontSize: 22, color:"#fff", fontWeight:"bold",  fontFamily: 'Comic Neue'}}>MangoManga</span>
             </MDBNavItem>           
           </MDBNavbarNav>           
 
