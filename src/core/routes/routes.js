@@ -5,10 +5,19 @@ import Home from "../../pages/home/"
 // import Registro from "../../pages/registro/"
 import Manga from "../../pages/manga/"
 import MangaRegister from "../../pages/manga/register"
+
 import ScanRegister from "../../pages/scans/register"
+import ScanEdit from "../../pages/scans/edit"
+
 import EditoraRegister from "../../pages/editora/register"
+import EditoraEdit from "../../pages/editora/edit"
+
 import GeneroRegister from "../../pages/generos/register"
+import GeneroEdit from "../../pages/generos/edit"
+
 import AuthorRegister from "../../pages/author/register"
+import AuthorEdit from "../../pages/author/edit"
+
 import SearchPage from '../../pages/search'
 import ProfileUpdate from '../../pages/profile/edit'
 import Profile from '../../pages/profile/'
@@ -33,12 +42,16 @@ const Routes  = () => {
       <Route path='/manga/create' exact component={MangaRegister} />
       {/* Rotas Scans */}
       <Route path='/scans/create' exact component={ScanRegister} />
+      <Route path='/scans/:id/edit' exact component={ScanEdit} />
       {/* Rotas Editora */}
       <Route path='/editora/create' exact component={EditoraRegister} />
+      <Route path='/editora/:id/edit' exact component={EditoraEdit} />
       {/* Rotas Gênero */}
       <Route path='/genero/create' exact component={GeneroRegister} />
+      <Route path='/genero/:id/edit' exact component={GeneroEdit} />
       {/* Rotas Autor */}
       <Route path='/author/create' exact component={AuthorRegister} />
+      <Route path='/author/:id/edit' exact component={AuthorEdit} />
       {/* Search Search */}
       <Route path='/search' exact component={SearchPage} />
       <Route path='/search/:type/:name' exact component={SearchPage} />

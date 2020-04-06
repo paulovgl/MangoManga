@@ -4,6 +4,8 @@ import {MMCardView} from '../../components/card'
 import { MMInput } from '../../components/formulario'
 import {MDBRow, MDBCol} from 'mdbreact'
 import {MMBtnReturn, MMBtnSubmit} from '../../components/buttons'
+import Api from '../../core/api/';
+import PopUp from '../../components/notifications/';
 
 class RegisterEditora extends Component {
 
@@ -24,6 +26,24 @@ class RegisterEditora extends Component {
     })
   }
 
+
+  listenSubmit= event => {
+
+    Api.createAutor(this.state).then(
+      res => {        
+        if(res.status === 'success'){
+          console.log(res)
+          PopUp.showMessage('success', res.data.message)
+        }
+        else if( res.status === 'error'){
+          res.content.map((x,y) => {
+            PopUp.showMessage('error', x.message)
+          })
+        }
+      }
+    )    
+  }
+
     //  Modify Select
     handleSelectChange(event) {
       const { name, value } = event.target
@@ -40,7 +60,7 @@ class RegisterEditora extends Component {
           <MDBRow>
 
             <MDBCol md='12' lg='6'>
-              <MMInput name='nome' label='Nome' onChange={this.listinput}/>             
+              <MMInput name='name' label='Nome' onChange={this.listinput}/>             
             </MDBCol>
             <MDBCol md='12' lg='6'>              
               <MMInput type='url' name='url' label='Perfil/URL do autor' onChange={this.listinput}/>
@@ -50,7 +70,7 @@ class RegisterEditora extends Component {
 
             <center>
               <MMBtnReturn />
-              <MMBtnSubmit  />
+              <MMBtnSubmit onClick={()=> this.listenSubmit()}   />
             </center>
 
         </MMCardView>

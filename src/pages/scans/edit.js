@@ -7,17 +7,41 @@ import {MMBtnReturn, MMBtnSubmit} from '../../components/buttons'
 import Api from '../../core/api/';
 import PopUp from '../../components/notifications/';
 
-class RegisterEditora extends Component {
+class EditScan extends Component {
 
   constructor(prop) {
     super(prop)
     this.stateInitial = {
-    name: '',    
+    nome: '',
+    
   }
   this.state = this.stateInitial
   this.handleSelectChange = this.handleSelectChange.bind(this);
 }
 
+
+  componentDidMount(){
+    this.getData();
+  }
+
+  async getData(){
+    const param = this.props.match.params.id;
+    Api.getEditScan(param).then(      
+      res => {
+        console.log(res)
+      if(res.status === 'success'){
+        this.setState(res.data.data)
+      }
+      else if( res.status === 'error'){
+        res.content.map((x,y) => {
+          PopUp.showMessage('error', x.message)
+        })      
+        this.props.history.push('/');
+      }
+    }
+    )
+  }
+  
   listinput = event => {   
     const { name, value } = event.target
     this.setState({
@@ -26,9 +50,9 @@ class RegisterEditora extends Component {
   }
 
 
-  listenSubmit = event => {
-
-    Api.createGenero(this.state).then(
+  listenSubmit= event => {
+    const id = this.props.match.params.id;
+    Api.updateScan(id, this.state).then(
       res => {        
         if(res.status === 'success'){
           console.log(res)
@@ -54,19 +78,22 @@ class RegisterEditora extends Component {
       <Fragment>
       <Main>
 
-        <MMCardView title='Cadastrar Gênero'>
+        <MMCardView title='Atualizar Scan' >
           
           <MDBRow>
 
-            <MDBCol md='12' lg='12'>
-              <MMInput name='name' label='Nome' onChange={this.listinput}/>
+            <MDBCol md='12' lg='6'>
+              <MMInput name='name' value={this.state.name} label='Nome' onChange={this.listinput}/>             
+            </MDBCol>
+            <MDBCol md='12' lg='6'>              
+              <MMInput value={this.state.url} type='url' name='url' label='URL/Pagina de Informação' onChange={this.listinput}/>
             </MDBCol>
 
           </MDBRow>
 
             <center>
               <MMBtnReturn />
-              <MMBtnSubmit onClick={()=> this.listenSubmit()}   />
+              <MMBtnSubmit update onClick={()=> this.listenSubmit()}   />
             </center>
 
         </MMCardView>
@@ -79,4 +106,4 @@ class RegisterEditora extends Component {
 
 }
 
-export default RegisterEditora;
+export default EditScan;
