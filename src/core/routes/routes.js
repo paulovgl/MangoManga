@@ -18,9 +18,10 @@ import GeneroEdit from "../../pages/generos/edit"
 import AuthorRegister from "../../pages/author/register"
 import AuthorEdit from "../../pages/author/edit"
 
-import SearchPage from '../../pages/search'
 import ProfileUpdate from '../../pages/profile/edit'
 import Profile from '../../pages/profile/'
+
+import SearchPage from '../../pages/search'
 import NotFound from '../../pages/404'
 import Index from '../../pages/index'
 
@@ -34,6 +35,7 @@ const Routes  = () => {
 
       {/* <Route path='/login' exact component = {Login}  />   */}
       <Route path='/' exact component={Home} />
+      
       {/* <Route path='/registro' exact component={Registro} /> */}
       <Route path='/profile/edit' exact component={ProfileUpdate} />
       <Route path='/profile' exact component={Profile} />
