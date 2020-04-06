@@ -58,6 +58,69 @@ export const themes = {
         }
       }
             
+    },
+    manga:{
+     avatar: {       
+      button:{
+        color: '#fff',
+        add:{
+          background: 'rgb(230, 74, 25)',
+          hover: {
+            background: 'rgba(230, 74, 25, 0.6)'
+          }
+        },
+        remove:{
+          background: 'rgba(62, 69, 81, 1)',
+          hover: {
+            background: 'rgba(62, 69, 81, 0.6)'
+          }
+        },
+      }       
+     },
+
+    description:{
+      title:{
+        color: '#3E4551'
+      },
+      author: {
+        color: '#3E4551',
+      },
+      scans:{
+        background: '#d32f2f',
+        color: '#fff',
+      },      
+      genre:{
+        color: '#fff',
+        background: '#3E4551',
+      },
+      editora:{
+        
+      },
+      status:{
+
+      },
+      description:{
+        color: '#3E4551'
+      },
+      },
+      
+      chapter:{
+        number:{
+          color: '#3E4551',
+        },
+        title: {
+          color: '#d32f2f'
+        },
+        date: {
+          color: '#fff',
+          background: '#d32f2f'
+        },
+        new: {
+          background: 'rgb(230, 74, 25)',
+          color: '#fff'
+        }
+      }
+
     }
   },
   dark: {
@@ -111,7 +174,69 @@ export const themes = {
           }
         }
       }      
-    }
+    },
+    manga:{
+      avatar: {       
+       button:{
+         color: '#fff',
+         add:{
+           background: 'rgb(230, 74, 25)',
+           hover: {
+             background: 'rgba(230, 74, 25, 0.6)'
+           }
+         },
+         remove:{
+           background: 'rgba(62, 69, 81, 1)',
+           hover: {
+             background: 'rgba(62, 69, 81, 0.6)'
+           }
+         },
+       }       
+      },
+ 
+     description:{
+       title:{
+         color: '#fff'
+       },
+       author: {
+         color: '#3E4551',
+       },
+       scans:{
+         background: '#d32f2f',
+         color: '#fff',
+       },      
+       genre:{
+         color: '#fff',
+         background: '#3E4551',
+       },
+       editora:{
+         color: '#fff'
+       },
+       status:{
+ 
+       },
+       description:{
+         color: '#fff'
+       },
+       },
+       
+       chapter:{
+         number:{
+           color: '#3E4551',
+         },
+         title: {
+           color: '#d32f2f'
+         },
+         date: {
+           color: '#fff',
+           background: '#d32f2f'
+         },
+         new: {
+           background: 'rgb(230, 74, 25)',
+           color: '#fff'
+         }
+       } 
+     }
   }
 }
 

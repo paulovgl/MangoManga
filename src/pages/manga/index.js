@@ -7,11 +7,13 @@ import MMRating from '../../components/rating'
 import moment from 'moment';
 import {MMTabs} from '../../components/tabs'
 import {MMComments} from '../../components/comments/'
+import {MMTheme} from '../../components/theme'
 
-const styles = StyleSheet.create({
+const styles = (theme) =>  StyleSheet.create({
 
   mangaAuthor: {
-    paddingBotton: 500
+    paddingBotton: 500,
+    color: theme.manga.description.author.color
   },  
   card: {
     width: 250,
@@ -22,19 +24,21 @@ const styles = StyleSheet.create({
   },
   genre:{
     padding: '0.3em',
-    backgroundColor: '#3E4551',
+    backgroundColor: theme.manga.description.genre.background,
     borderRadius: 7,
     marginRight: 2,
-    color: '#fff',
+    color: theme.manga.description.genre.color,
     fontWeight: '500'
   },
   mangaTitle:{
     fontWeight: '600',
-    fontSize: 30
+    fontSize: 30,
+    color: theme.manga.description.title.color
   },
   mangaDescription:{
     marginTop: 5,   
-    fontSize: 14
+    fontSize: 14,
+    color: theme.manga.description.description.color,
   },
   chapterList: {
     flexDirection: 'row',
@@ -51,9 +55,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   chapterDate: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: theme.manga.chapter.date.background,
     maginBotton:0,
-    color: '#fff',
+    color: theme.manga.chapter.date.color,
     padding: 5,
     width: 100,
     fontSize: 13,
@@ -63,17 +67,17 @@ const styles = StyleSheet.create({
   },
   chapterNumber: {
     fontSize: 16,
-    color: '#3E4551',
+    color: theme.manga.chapter.number.color,
     fontWeight: '500'
   },
   chapterTitle: {
     fontSize: 16,
-    color: '#d32f2f',
+    color: theme.manga.chapter.title.color,
     fontWeight: '500'
   },
   mangaScan: {
-    color: '#fff',
-    backgroundColor: '#d32f2f',
+    color: theme.manga.description.scans.color,
+    backgroundColor: theme.manga.description.scans.background,
     borderRadius: 7,
     padding: '0.3em',
     marginLeft: 2,
@@ -93,39 +97,44 @@ const styles = StyleSheet.create({
     cursor: 'pointer',
     textAlign: 'center',
     fontWeight: 600,
-    color: '#FFF'
+    color: theme.manga.avatar.button.color
   },
   mangaAdd: {
-    backgroundColor: 'rgb(230, 74, 25)',
+    backgroundColor: theme.manga.avatar.button.add.background,
     transitionDuration: '200ms',
     ':hover':{
-      backgroundColor: 'rgba(230, 74, 25, 0.6)',
+      backgroundColor: theme.manga.avatar.button.add.hover.background,
       transitionDuration: '200ms',
     }
   },
   mangaRemove: {
-    backgroundColor: 'rgba(62, 69, 81, 1)',
+    backgroundColor: theme.manga.avatar.button.remove.background,
     transitionDuration: '200ms',
     ':hover':{
-      backgroundColor: 'rgba(62, 69, 81, 0.6)',
+      backgroundColor: theme.manga.avatar.button.remove.hover.background,
       transitionDuration: '200ms',
     }
   },
   chapterNew: {
     marginRight: 8,
-    color: '#fff',
+    color: theme.manga.chapter.new.color,
     fontSize: 13,
-    backgroundColor: 'rgb(230, 74, 25)',
+    backgroundColor: theme.manga.chapter.new.background,
     borderRadius: 7,
     padding: '0.3em',
     fontWeight: '500',
+  },    
+  mangaEditora: {
+    color: theme.manga.description.editora.color,
+    fontWeight: 400,
   }
-  
   
 });
 
 
 export default class Manga extends Component {
+
+  static contextType = MMTheme
 
   state={
     manga: [
@@ -193,12 +202,12 @@ export default class Manga extends Component {
     this.setState({add: !this.state.add})  
   }
 
-  showNew(data){
+  showNew(data, theme){
     let today = moment().startOf('day');
     console.log(today)
     data = moment(data, 'DD/MM/YYYY').format('YYYY-MM-DD');    
     const dias = moment.duration(today.diff(data)).asDays();   
-    if(dias < 5) return (<span className={css(styles.chapterNew)}>Novo</span>)   
+    if(dias < 5) return (<span className={css(styles(theme).chapterNew)}>Novo</span>)   
   }
 
 
@@ -213,7 +222,7 @@ export default class Manga extends Component {
     }    
   }
 
-  showList(){
+  showList(theme){
     return (
       <MDBCard className='mb-2'>
       {/* <div className={` ${css(styles.countChapter)}`}>{this.state.manga[0].chapter.length} Capítulo{this.state.manga[0].chapter.length > 1 ? 's' : ''}</div> */}
@@ -222,22 +231,22 @@ export default class Manga extends Component {
            return (
             <MDBRow key={`${y}cc`} className='align-middle mt-2 mb-2'>
             <MDBCol md='9' className='align-middle' >
-              <div className={css(styles.chapterList)} >
-                <div className={css(styles.chapterDate)}>
+              <div className={css(styles(theme).chapterList)} >
+                <div className={css(styles(theme).chapterDate)}>
                  {x.date}
                 </div>
                 <div className='ml-4 mt-1'>
-                  <h6 className={css(styles.chapterNumber)}>Capítulo Nº: {x.number}</h6>
+                  <h6 className={css(styles(theme).chapterNumber)}>Capítulo Nº: {x.number}</h6>
                 </div>
                 <div className='ml-4 mt-1'>
-                  <h6 className={css(styles.chapterTitle)}>{x.title}</h6>
+                  <h6 className={css(styles(theme).chapterTitle)}>{x.title}</h6>
                 </div> 
                               
               </div>                   
             </MDBCol> 
             <MDBCol md='3' className='align-middle'>
               <div className='text-right'>
-                {this.showNew(x.date)}
+                {this.showNew(x.date, theme)}
                 <a className='chaptherView'><MDBIcon icon='eye' size='1x' /></a>
               </div>
             </MDBCol>
@@ -250,17 +259,18 @@ export default class Manga extends Component {
   }
   
   render() {
+    let theme = this.context
     return (
       <Main>
         <MDBRow>
           <MDBCol lg='3' md='12'>
             <div>
-              <MDBCard className={css(styles.card)} onClick={()=>{this.addManga()}}>
+              <MDBCard className={css(styles(theme).card)} onClick={()=>{this.addManga()}}>
                     <MDBCardImage className="img-fluid" src={this.state.manga[0].image} waves />
                     <MDBCardBody waves onClick={()=>{this.addManga()}} 
                         className={`
-                          ${css(styles.mangaButton)} 
-                          ${this.state.add ? css(styles.mangaRemove) : css(styles.mangaAdd) }
+                          ${css(styles(theme).mangaButton)} 
+                          ${this.state.add ? css(styles(theme).mangaRemove) : css(styles(theme).mangaAdd) }
                         `}>
                           {this.state.add ? 'Remover' : 'Adicionar'}
                           
@@ -275,64 +285,64 @@ export default class Manga extends Component {
             
             <div>
               <div>
-                <h4 className={css(styles.mangaTitle)}> {this.state.manga[0].title}</h4>
+                <h4 className={css(styles(theme).mangaTitle)}> {this.state.manga[0].title}</h4>
               </div>  
-              <div className={(styles.mangaAuthor)}>
+              <div className={(styles(theme).mangaAuthor)}>
                  <h6 ><b>Autor: </b> 
                  {
                      this.state.manga[0].autor?.map((x,y)=> {
-                     return (<a className={css(styles.mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
+                     return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
                      })
                     // <a>Traduzido por: {}</a>
                   }                 
                 </h6>  
               </div>  
 
-              <div className='mt-3'>
-                <h6  style={{fontWeight: 400}} > Traduzido por:    
+              <div className={`mt-3`} >
+                <h6 className={`${css(styles(theme).mangaEditora)}`} > Traduzido por:    
                   {
                      this.state.manga[0].scans?.map((x,y)=> {
-                     return (<a className={css(styles.mangaScan)} href={x.url} target='_blank' >{x.name}</a>)
+                     return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' >{x.name}</a>)
                      })
                     // <a>Traduzido por: {}</a>
                   }
                 </h6>
               </div>
 
-              <div className='mt-3'>
-                <h6  style={{fontWeight: 400}} > Editora:  
+              <div className={`mt-3`}>
+                <h6 className={`${css(styles(theme).mangaEditora) }`}> Editora:  
                   {
                      this.state.manga[0].editora?.map((x,y)=> {
-                     return (<a className={css(styles.mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
+                     return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
                      })
                     // <a>Traduzido por: {}</a>
                   }
                 </h6>
               </div> 
 
-              <div className='mt-3'>
+              <div className={`mt-3`}>
               {
                 this.state.manga[0].genre?.map((x,y) =>{
-                return <span className={css(styles.genre)} key={ `${y}g` }>{x} </span>
+                return <span className={css(styles(theme).genre)} key={ `${y}g` }>{x} </span>
                 })
               }
               </div>
 
-              <div className='mt-3'>
-                <h6 style={{fontWeight: 400}}>
-                  Status: <span className={`${css(styles.status)} success-color`}>{this.state.manga[0].status}</span>
+              <div className={`mt-3`}>
+                <h6 className={`${css(styles(theme).mangaEditora) }`}>
+                  Status: <span className={`${css(styles(theme).status)} success-color`}>{this.state.manga[0].status}</span>
                 </h6>
                  
               </div>
 
-             <p className={`${css(styles.mangaDescription)} pt-0`} > {this.state.manga[0].description}</p>
+             <p className={`${css(styles(theme).mangaDescription)} pt-0`} > {this.state.manga[0].description}</p>
             </div>
           </MDBCol>
         </MDBRow> 
         
 
           <MMTabs data={[
-            {name: this.countChapter(), component: this.showList() },
+            {name: this.countChapter(), component: this.showList(theme) },
             {name: 'Comentários', component: <MMComments />}]} />   
 
       </Main>

@@ -85,8 +85,8 @@ const style = StyleSheet.create({
     backgroundColor: '#2c4762',
   },
   textSpoiler: {
-    backgroundColor: 'rgb(62, 69, 81)',
-    color: 'rgb(62, 69, 81)',
+    backgroundColor: 'rgb(75, 81, 93)',
+    color: 'rgb(75, 81, 93)',
     ':hover': {
       color: '#fff'
     },    
@@ -95,7 +95,7 @@ const style = StyleSheet.create({
     // position: 'relative', 
     // '::before':{
       position: 'absolute',
-      background: 'rgb(62, 69, 81)',
+      background: 'rgb(75, 81, 93)',
       content: "' '",
       top: 0, 
       bottom: 0,
