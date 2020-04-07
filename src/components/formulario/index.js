@@ -12,6 +12,26 @@ const styles = (theme) => StyleSheet.create({
       color: theme.input.text.placeholder.color,     
     }   
   },
+  swsFile:{
+    borderColor: theme.input.text.border,
+    background: theme.input.text.background, 
+    color: theme.input.text.color,
+    '::-webkit-file-upload-button':{
+      backgroundColor: theme.buttons.default.background,
+      padding: '0.5rem 1.6rem',
+      fontSize: `0.64rem`,
+      color: theme.buttons.default.color,
+      textTransform: 'uppercase',
+      wordWrap: 'break-word',
+      whiteSpace: 'normal',
+      cursor: 'pointer',
+      borderRadius: '0.125rem',
+      border: 0,
+      boxShadow: `0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12)`,
+      transition: `color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out` 
+
+    },    
+  },
   swsLabel: {
     color: theme.input.label.color,
     fontWeight: '500'
@@ -29,7 +49,68 @@ const styles = (theme) => StyleSheet.create({
       color: theme.input.textarea.placeholder.color,      
     }
   },
+
+  swsSectionForm: {
+    color: theme.input.section.color,
+    fontWeight: 'bold',
+    marginBotton: 0,
+    marginRight: 15
+  },
+
+  swsSectionFormLine: {
+    backgroundColor: theme.input.section.hr.color,
+  }
 })
+
+
+class MMSection extends Component{
+  static contextType = MMTheme
+  render(){
+    let theme = this.context
+    let props = this.props
+    return (
+      <>
+      <div style={{display:'flex', alignItems:'center'}}>
+      <h6 className={css(styles(theme).swsSectionForm)}>
+        {props.title}
+      </h6>
+        {props.children}
+      </div>     
+      <hr className={css(styles(theme).swsSectionFormLine)}  />
+      </>
+    )
+  }
+}
+
+class MMFile extends Component {
+  static contextType = MMTheme
+  render(){
+  let props = this.props
+  let theme = this.context
+  return (
+    <div className="form-group">  
+      <label  className={css(styles(theme).swsLabel)} htmlFor={props.id}>
+      <span className='control-label' >
+       {props.label}
+      </span> 
+      </label> 
+    {/* <span>a</span> 
+    <div className="custom-file"> */}
+      <input        
+        type="file"
+        name={props.name}
+        className={`form-control-file pt-1 pb-1 ${css(styles(theme).swsFile)}`}
+        id={props.id}
+        value={props.value}
+        onChange={props.onChange}
+        accept={props.accept}
+        // aria-describedby="inputGroupFileAddon01"
+      />    
+    {/* </div>         */}
+  </div> 
+  )
+  }
+}
 
 
 class MMInput extends Component {
@@ -65,9 +146,9 @@ class MMSelect extends Component {
   static contextType = MMTheme
 
   renderoption(props){
-    if(!props.observe){
+    if(!props.observe){     
       return (
-        props.options.map((x, i) => {
+        props.options.map((x, i) => {         
           return <option key={i} value={x.value}>{x.label}</option>
         })
       )
@@ -133,4 +214,4 @@ class MMInputArea extends Component {
 }
 }
 
-export {MMInput, MMSelect, MMInputArea }
+export {MMInput, MMSelect, MMInputArea, MMSection, MMFile }

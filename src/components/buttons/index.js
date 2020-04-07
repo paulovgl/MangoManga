@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom';
 class MMButton extends Component{
   render(){
     return (
-      <MDBBtn type={this.props.type ? this.props.type : 'button'} onClick={()=> {this.props.onClick()}} color={this.props.color ? this.props.color : 'red darken-2'}>      
+      <MDBBtn className={`${this.props.sm ? 'btn-sm' : ''}`} type={this.props.type ? this.props.type : 'button'} onClick={()=> {this.props.onClick()}} color={this.props.color ? this.props.color : 'red darken-2'}>      
           {this.props.title}      
       </MDBBtn>
     )

@@ -10,6 +10,12 @@ export const themes = {
       label: {
         color: '#d32f2f',        
       },
+      section: {
+        color: '#d32f2f',
+        hr: {
+          color:'#f57600' 
+        }
+      },
       text: {
         border: '#f57600',
         background: 'rgba(255,255,255, 0.5)',
@@ -121,6 +127,12 @@ export const themes = {
         }
       }
 
+    },
+    buttons: {
+      default: {
+        color: '#fff',
+        background: '#d32f2f'
+      }
     }
   },
   dark: {
@@ -130,6 +142,12 @@ export const themes = {
     input:{
       label: {
         color: '#f57600',        
+      },
+      section: {
+        color: '#d32f2f',
+        hr: {
+          color:'#f57600' 
+        }
       },
       text: {
         border: '#4a5879',
@@ -236,6 +254,12 @@ export const themes = {
            color: '#fff'
          }
        } 
+     },
+     buttons: {
+       default: {
+         color: '#fff',
+         background: '#d32f2f'
+       }
      }
   }
 }

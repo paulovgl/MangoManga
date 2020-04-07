@@ -37,6 +37,21 @@ const ApiService = {
       })
   },
 
+  getShowEditora: async (id) => {
+    return await axios.get(`${endpoint}/editora/show`)
+      .then( response => response.data )
+      .catch(error => {
+        if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+        }
+        else{
+          if(error.response.hasOwnProperty('data') && error.response.data.hasOwnProperty('content') ){
+            return error.response.data
+          }
+        }
+      })
+  },
+
   updateEditora: async (id, dados) => {    
     return await axios.put(`${endpoint}/editora/${id}/update`, dados, {})
     .then(response =>{return response.data} )
@@ -76,6 +91,21 @@ const ApiService = {
   },
   getEditGenero: async (id) => {
     return await axios.get(`${endpoint}/genero/${id}/edit`)
+      .then( response => response.data )
+      .catch(error => {
+        if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+        }
+        else{
+          if(error.response.hasOwnProperty('data') && error.response.data.hasOwnProperty('content') ){
+            return error.response.data
+          }
+        }
+      })
+  },
+
+  getShowGenero: async () => {
+    return await axios.get(`${endpoint}/genero/show`)
       .then( response => response.data )
       .catch(error => {
         if(!error.response){
@@ -160,6 +190,21 @@ const ApiService = {
     })
   },
 
+  getShowScan: async () => {
+    return await axios.get(`${endpoint}/scan/show`)
+      .then( response => response.data )
+      .catch(error => {
+        if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+        }
+        else{
+          if(error.response.hasOwnProperty('data') && error.response.data.hasOwnProperty('content') ){
+            return error.response.data
+          }
+        }
+      })
+  },
+
   // Autor
 
   createAutor: async (dados) => {    
@@ -197,6 +242,39 @@ const ApiService = {
 
   updateAutor: async (id, dados) => {    
     return await axios.put(`${endpoint}/autor/${id}/update`, dados, {})
+    .then(response =>{return response.data} )
+    .catch(error => {
+      if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+      }
+      else{
+        console.log(error)
+        const { response } = error;
+        const { request, ...errorObject } = response; // take everything but 'request'
+        if(errorObject.hasOwnProperty('data') && errorObject.data.hasOwnProperty('content')){
+          return  errorObject.data          
+        }
+      }
+    })
+  },
+
+  getShowAutor: async () => {
+    return await axios.get(`${endpoint}/autor/show`)
+      .then( response => response.data )
+      .catch(error => {
+        if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+        }
+        else{
+          if(error.response.hasOwnProperty('data') && error.response.data.hasOwnProperty('content') ){
+            return error.response.data
+          }
+        }
+      })
+  },
+
+  createManga: async (dados) => {    
+    return await axios.post(`${endpoint}/manga/create`, dados, {})
     .then(response =>{return response.data} )
     .catch(error => {
       if(!error.response){
