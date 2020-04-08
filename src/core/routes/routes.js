@@ -5,6 +5,7 @@ import Home from "../../pages/home/"
 // import Registro from "../../pages/registro/"
 import Manga from "../../pages/manga/"
 import MangaRegister from "../../pages/manga/register"
+import RegisterCapitulo from '../../pages/capitulos/register'
 
 import ScanRegister from "../../pages/scans/register"
 import ScanEdit from "../../pages/scans/edit"
@@ -57,10 +58,11 @@ const Routes  = () => {
       {/* Search Search */}
       <Route path='/search' exact component={SearchPage} />
       <Route path='/search/:type/:name' exact component={SearchPage} />
-      <Route path='/login' exact component={Index} />
-
-      {/* Rota Error */}
-      <Route component = {NotFound} />
+      <Route path='/login' exact component={Index} />     
+      {/* Rotas Capítulos */}
+      <Route path='/capitulos/create' exact component={RegisterCapitulo} />
+       {/* Rota Error */}
+       <Route component = {NotFound} />
 
 
     </Switch>

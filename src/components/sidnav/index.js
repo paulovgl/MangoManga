@@ -70,6 +70,10 @@ class Sidnav extends Component {
                     title: 'Scan',
                     eventKey: 'scans/create', 
                 },
+                {
+                    title: 'Capítulos',
+                    eventKey: 'capitulos/create', 
+                },
                 
             ]
         },

@@ -8,6 +8,9 @@ import moment from 'moment';
 import {MMTabs} from '../../components/tabs'
 import {MMComments} from '../../components/comments/'
 import {MMTheme} from '../../components/theme'
+import Api from '../../core/api'
+import PopUp from '../../components/notifications'
+import imgdef from '../../images/mangabg.png'
 
 const styles = (theme) =>  StyleSheet.create({
 
@@ -138,64 +141,122 @@ export default class Manga extends Component {
 
   state={
     manga: [
-      {
-         id: 1,
-         title: 'Black Clover ',
-         description: 'Em um mundo em que até as tarefas mais simples do dia a dia são feitas com o uso de magia, quem não consegue usá-la é tratado como nada! Esta é a vida de Asta, um jovem que mesmo sem um pingo de magia, sonha em se tornar o Mago Imperador, o mais forte de todos os magos! Com muito esforço e trabalho duro, será ele capaz de atingir seus objetivos e superar seu genial rival e amigo de infância, Yuno?!!',
-         genre: [
-           "Ação", 'Aventura', 'Fantasia', 'Magia', 'Shounen'
-         ],
-         autor: [{name: 'Tabata, Yuuki', url:''}],
-         scans: [{ name: 'scansPROJECT', url: ''}],
-         editora: [{name: 'Panini', url: 'https://loja.panini.com.br/panini/solucoes/Busca.aspx?fcp=29009'}],
-         image: 'https://static3.mangalivre.com/capas/XzJfT6TjJArZeQjuoWyWSA/1751/external_cover.jpg',
-         status: 'Ativo',
-         rating: 3,         
-         chapter: [
-           {
-             id: 1,
-             date: '02/08/19',
-             title: 'Yunoo!!',
-             number: 1             
-           },
-           {
-            id: 2,
-            date: '04/04/2020',
-            title: 'Yunoo eu te amo!!',
-            number: 2             
-          }
-         ]      
-       },
-      //  {
-      //   id: 2,
-      //   title: 'Dangeon Reset',
-      //   description: '[A Dungeon está resetando.] Quando a Dungeon é completamente explorada e suas armadilhas são ativadas, ela é resetada automaticamente para os próximos ‘jogadores’. Mas esses resets não funcionam em mim?! A única existência na dungeon que se tornou livre dos resets eternos da dungeon.',
-      //   genre: [
-      //     "Ação", 'Aventura', 'Fantasia'
-      //   ],
-      //   autor: [{name: 'Daul', url:''}],
-      //   scans: [{ name: 'NeoxScan', url: ''}],
-      //   editora: [{name: 'Ant Studio', url: ''}],
-      //   image: 'https://neoxscan.com/newsite/wp-content/uploads/2020/01/Dungeon-Reset-193x278.jpg',
-      //   status: 'Ativo',
-      //   rating: 4,         
-      //   chapter: [
-      //     {
-      //       id: 1,
-      //       date: '02/08/2019',
-      //       title: 'Eu estou vivo?!',
-      //       number: 1             
-      //     },
-      //     {
-      //      id: 2,
-      //      date: '04/04/2020',
-      //      title: 'Resetando',
-      //      number: 2             
-      //    }
-      //   ]      
-      // }
+      // {
+      //    id: 1,//
+      //    title: 'Black Clover ',//
+      //    description: 'Em um mundo em que até as tarefas mais simples do dia a dia são feitas com o uso de magia, quem não consegue usá-la é tratado como nada! Esta é a vida de Asta, um jovem que mesmo sem um pingo de magia, sonha em se tornar o Mago Imperador, o mais forte de todos os magos! Com muito esforço e trabalho duro, será ele capaz de atingir seus objetivos e superar seu genial rival e amigo de infância, Yuno?!!',//
+      //    genre: [
+      //      "Ação", 'Aventura', 'Fantasia', 'Magia', 'Shounen'
+      //    ], //
+      //    autor: [{name: 'Tabata, Yuuki', url:''}],//
+      //    scans: [{ name: 'scansPROJECT', url: ''}], //
+      //    editora: [{name: 'Panini', url: 'https://loja.panini.com.br/panini/solucoes/Busca.aspx?fcp=29009'}],
+      //    image: 'https://static3.mangalivre.com/capas/XzJfT6TjJArZeQjuoWyWSA/1751/external_cover.jpg',
+      //    status: 'Ativo', //
+      //    rating: 3, //     
+      //    chapter: [
+      //      {
+      //        id: 1,
+      //        date: '02/08/19',
+      //        title: 'Yunoo!!',
+      //        number: 1             
+      //      },
+      //      {
+      //       id: 2,
+      //       date: '04/04/2020',
+      //       title: 'Yunoo eu te amo!!',
+      //       number: 2             
+      //     }
+      //    ]      
+      //  },      
       ],
       add: false,
+  }
+
+
+  componentDidMount(){
+    this.getData()
+  }
+
+  async getData(){
+    const id =  this.props.match.params.id 
+    let data = [];
+     let chapter = [];
+    await Api.getShowManga(id).then(res => {
+      if(res.status === 'success'){
+        
+        res.data.data.map((x,y)=> {         
+           let editoras = []
+           if (x.editora){
+             editoras =  [{name: x.editora.name, url: x.editora.url}]
+           }
+          let generos = [];
+          x.generos.map((i,j) => {
+              generos.push(i.name)
+          })
+          let autores = [];
+          x.autores.map((i,j) => {
+              autores.push({name: i.name, url:i.url})
+          })
+          let scans = [];
+          x.scans.map((i,j) => {
+              scans.push({name: i.name, url:i.url})
+          })         
+          let status = {"0": 'Ativo', "1": "Suspenso", "2": "Completo", "3": "Cancelado" }
+
+          data.push({
+            id: x.id,
+            title: x.title,
+            description: x.description,
+            image: `data:image/png;base64,${x.avatar}`,
+            genre: generos,
+            autor: autores,
+            scans: scans,
+            editora: editoras,
+            status: status[x.status],
+            rating: 4,
+            // A ser configurado ainda
+            chapter: [
+            //   {
+            //     id: 1,
+            //     date: '02/08/19',
+            //     title: 'Yunoo!!',
+            //     number: 1             
+            //   },
+            //   {
+            //    id: 2,
+            //    date: '04/04/2020',
+            //    title: 'Yunoo eu te amo!!',
+            //    number: 2             
+            //  }
+            ]  
+          })
+        })
+
+        this.setState({manga: data})
+        // console.log(this.state.manga)
+      }
+      else if( res.status === 'error'){
+        res.content.map((x,y) => {
+          PopUp.showMessage('error', x.message)
+        })      
+        this.props.history.push('/');
+      }
+    })
+    
+    await Api.getShowCapituloManga(id).then(res => {
+      if(res.status === 'success'){
+        res.data.data.map((i,j) => {
+          chapter.push({id: i.id, date: i.date, title: i.title, number: i.capitulo })
+        })
+        let newdata = this.state.manga;
+        newdata[0].chapter = chapter
+        this.setState({manga: newdata})
+        // this.setState({manga: { chapter: chapter }})
+       
+      }
+    })
+
   }
 
   addManga(){
@@ -226,6 +287,9 @@ export default class Manga extends Component {
     return (
       <MDBCard className='mb-2'>
       {/* <div className={` ${css(styles.countChapter)}`}>{this.state.manga[0].chapter.length} Capítulo{this.state.manga[0].chapter.length > 1 ? 's' : ''}</div> */}
+      {this.state.manga[0].chapter.length === 0 ? 
+      <center><h6 className={`${css(styles(theme).chapterTitle)} mt-2`}>SEM CAPÍTULOS NO MOMENTO!!</h6></center>
+       : ''}
        {
          this.state.manga[0].chapter.map((x,y)=>{
            return (
@@ -257,95 +321,108 @@ export default class Manga extends Component {
     </MDBCard>  
     )
   }
+
+  renderManga(theme){
+    if(this.state.manga.length > 0){
+      return (       
+         <> 
+          <MDBRow>
+            <MDBCol lg='3' md='12'>
+              <div>
+                <MDBCard className={css(styles(theme).card)} onClick={()=>{this.addManga()}}>                
+                      <MDBCardImage className="img-fluid" src={this.state.manga[0].image !== null ? this.state.manga[0].image : imgdef } waves={true} />
+                      <MDBCardBody waves={true} onClick={()=>{this.addManga()}} 
+                          className={`
+                            ${css(styles(theme).mangaButton)} 
+                            ${this.state.add ? css(styles(theme).mangaRemove) : css(styles(theme).mangaAdd) }
+                          `}>
+                            {this.state.add ? 'Remover' : 'Adicionar'}
+                            
+                      </MDBCardBody>
+                </MDBCard>
+              </div>
+            </MDBCol>
+  
+            <MDBCol lg='9' md='12'>
+  
+                <MMRating initialRating={this.state.manga[0].rating} />
+              
+              <div>
+                <div>
+                  <h4 className={css(styles(theme).mangaTitle)}> {this.state.manga[0].title}</h4>
+                </div>  
+                <div className={(styles(theme).mangaAuthor)}>
+                   <h6 ><b>Autor: </b> 
+                   {
+                       this.state.manga[0].autor?.map((x,y)=> {
+                       return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
+                       })
+                      // <a>Traduzido por: {}</a>
+                    }                 
+                  </h6>  
+                </div>  
+  
+                <div className={`mt-3`} >
+                  <h6 className={`${css(styles(theme).mangaEditora)}`} > Traduzido por:    
+                    {
+                       this.state.manga[0].scans?.map((x,y)=> {
+                       return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' >{x.name}</a>)
+                       })
+                      // <a>Traduzido por: {}</a>
+                    }
+                  </h6>
+                </div>
+  
+                <div className={`mt-3`}>
+                  <h6 className={`${css(styles(theme).mangaEditora) }`}> Editora:  
+                    {
+                       this.state.manga[0].editora?.map((x,y)=> {
+                       return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
+                       })
+                      // <a>Traduzido por: {}</a>
+                    }
+                  </h6>
+                </div> 
+  
+                <div className={`mt-3`}>
+                {
+                  this.state.manga[0].genre?.map((x,y) =>{
+                  return <span className={css(styles(theme).genre)} key={ `${y}g` }>{x} </span>
+                  })
+                }
+                </div>
+  
+                <div className={`mt-3`}>
+                  <h6 className={`${css(styles(theme).mangaEditora) }`}>
+                    Status: <span className={`${css(styles(theme).status)} success-color`}>{this.state.manga[0].status}</span>
+                  </h6>
+                   
+                </div>
+  
+               <p className={`${css(styles(theme).mangaDescription)} pt-0`} > {this.state.manga[0].description}</p>
+              </div>
+            </MDBCol>
+          </MDBRow> 
+          
+  
+            <MMTabs data={[
+              {name: this.countChapter(), component: this.showList(theme) },
+              {name: 'Comentários', component: <MMComments />}]} />     
+        </>
+      )
+    }
+    else{
+      return <h1>Carregando...</h1>
+    }
+  }
   
   render() {
     let theme = this.context
     return (
       <Main>
-        <MDBRow>
-          <MDBCol lg='3' md='12'>
-            <div>
-              <MDBCard className={css(styles(theme).card)} onClick={()=>{this.addManga()}}>
-                    <MDBCardImage className="img-fluid" src={this.state.manga[0].image} waves />
-                    <MDBCardBody waves onClick={()=>{this.addManga()}} 
-                        className={`
-                          ${css(styles(theme).mangaButton)} 
-                          ${this.state.add ? css(styles(theme).mangaRemove) : css(styles(theme).mangaAdd) }
-                        `}>
-                          {this.state.add ? 'Remover' : 'Adicionar'}
-                          
-                    </MDBCardBody>
-              </MDBCard>
-            </div>
-          </MDBCol>
-
-          <MDBCol lg='9' md='12'>
-
-              <MMRating initialRating={this.state.manga[0].rating} />
-            
-            <div>
-              <div>
-                <h4 className={css(styles(theme).mangaTitle)}> {this.state.manga[0].title}</h4>
-              </div>  
-              <div className={(styles(theme).mangaAuthor)}>
-                 <h6 ><b>Autor: </b> 
-                 {
-                     this.state.manga[0].autor?.map((x,y)=> {
-                     return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
-                     })
-                    // <a>Traduzido por: {}</a>
-                  }                 
-                </h6>  
-              </div>  
-
-              <div className={`mt-3`} >
-                <h6 className={`${css(styles(theme).mangaEditora)}`} > Traduzido por:    
-                  {
-                     this.state.manga[0].scans?.map((x,y)=> {
-                     return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' >{x.name}</a>)
-                     })
-                    // <a>Traduzido por: {}</a>
-                  }
-                </h6>
-              </div>
-
-              <div className={`mt-3`}>
-                <h6 className={`${css(styles(theme).mangaEditora) }`}> Editora:  
-                  {
-                     this.state.manga[0].editora?.map((x,y)=> {
-                     return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
-                     })
-                    // <a>Traduzido por: {}</a>
-                  }
-                </h6>
-              </div> 
-
-              <div className={`mt-3`}>
-              {
-                this.state.manga[0].genre?.map((x,y) =>{
-                return <span className={css(styles(theme).genre)} key={ `${y}g` }>{x} </span>
-                })
-              }
-              </div>
-
-              <div className={`mt-3`}>
-                <h6 className={`${css(styles(theme).mangaEditora) }`}>
-                  Status: <span className={`${css(styles(theme).status)} success-color`}>{this.state.manga[0].status}</span>
-                </h6>
-                 
-              </div>
-
-             <p className={`${css(styles(theme).mangaDescription)} pt-0`} > {this.state.manga[0].description}</p>
-            </div>
-          </MDBCol>
-        </MDBRow> 
-        
-
-          <MMTabs data={[
-            {name: this.countChapter(), component: this.showList(theme) },
-            {name: 'Comentários', component: <MMComments />}]} />   
-
+       {this.renderManga(theme)}
       </Main>
     )
+    
   }
 }

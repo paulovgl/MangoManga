@@ -3,6 +3,7 @@ import {MDBCard, MDBCardImage, MDBCardBody, MDBCardHeader} from 'mdbreact'
 import {withRouter} from 'react-router'
 import {MMTheme} from '../theme'
 import {StyleSheet, css} from 'aphrodite';
+import imgdef from '../../images/mangabg.png'
 
 
 
@@ -57,11 +58,13 @@ class MMCard extends Component {
     let theme = this.context;
     return (
       <>
-      <MDBCard className={css(styles(theme).card)} onClick={() => this.props.history.push(`/manga/${this.props.id}/show`) }>    
+      <MDBCard className={css(styles(theme).card)} onClick={() => this.props.history.push(`/manga/${this.props.id}/show`) }>
+       {this.props.chapter ? 
        <div className={css(styles(theme).chapter)}>
         <h6 className={css(styles(theme).chapterNumber)}>{`# ${this.props.chapter}`}</h6>
-       </div>
-      <MDBCardImage  className="img-fluid" src={this.props.image} waves />
+       </div>       
+       : ''} 
+      <MDBCardImage  className="img-fluid" src={this.props.image === null || this.props.image === '' ? imgdef : this.props.image } waves />
       <MDBCardBody className={css(styles(theme).cardBody)}>
        <h6 className={css(styles(theme).cardTitle)}>{this.props.title}</h6>       
       </MDBCardBody> 

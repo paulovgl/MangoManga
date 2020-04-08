@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
 import {StyleSheet, css} from 'aphrodite'
 import { MMTheme} from '../theme';
+import DatePicker from 'react-date-picker';
+// import { registerLocale, setDefaultLocale } from  "react-datepicker";
+// import pt_BR from 'date-fns/locale/pt-BR';
+// import "react-datepicker/dist/react-datepicker.css";
+import "./form.scss";
 
 
 const styles = (theme) => StyleSheet.create({
@@ -59,6 +64,9 @@ const styles = (theme) => StyleSheet.create({
 
   swsSectionFormLine: {
     backgroundColor: theme.input.section.hr.color,
+  },
+  swsDatePicker:{
+    background: "#f4ff"
   }
 })
 
@@ -211,7 +219,31 @@ class MMInputArea extends Component {
         </div>
     </div>
   )
+} 
 }
+class MMDatepicker extends Component {
+  static contextType = MMTheme
+  render(){
+   let theme = this.context
+   let props = this.props
+   return (     
+    <div className="form-group">
+        <label  htmlFor={props.id} > <span className={` ${css(styles(theme).swsLabel)} control-label `} >{props.label}</span ></label>
+    <DatePicker
+    // locale={pt_BR}
+    name={props.name}  
+    value={props.value ? props.value : ''}  
+    selected={props.start ? props.start : new Date()}
+    onChange={props.onChange}
+    format="dd-MM-y"
+    className={`${css(styles(theme).swsInput)}   form-control form-control-md p-0`}
+    popperClassName={'d-block'}
+    // calendarClassName={css(styles(theme).swsDatePicker)}
+    // dayClassName={css({color: 'red'})}
+  />
+    </div>
+   )
+  }
 }
 
-export {MMInput, MMSelect, MMInputArea, MMSection, MMFile }
+export {MMInput, MMSelect, MMInputArea, MMSection, MMFile, MMDatepicker }

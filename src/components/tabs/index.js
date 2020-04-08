@@ -37,14 +37,14 @@ const styles = StyleSheet.create({
     
     renderTabs () {
       return this.props.data?.map((x,y)=>{
-        return <Tab className={css(styles.tabsTitle)}  >{x.name}</Tab> 
+        return <Tab key={`${y}tab`} className={css(styles.tabsTitle)}  >{x.name}</Tab> 
       })
     }
 
     renderComponents() {
       return this.props.data?.map((x,y)=> {
         return (
-          <TabPanel>
+          <TabPanel key={`${y}panel`}>
             {x.component}
          </TabPanel>
         )

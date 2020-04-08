@@ -4,6 +4,7 @@ import { MDBCol, MDBRow, MDBPageItem, MDBPageNav, MDBPagination } from 'mdbreact
 import { MMCard } from '../../components/card'
 import MMBusca from '../../components/pesquisa'
 import { StyleSheet, css } from 'aphrodite'
+import Api from '../../core/api'
 
 
 const styles = StyleSheet.create({
@@ -49,82 +50,35 @@ export default class MMSearch extends Component {
         paginate: 10,   
     
         manga: [
-          {
-            id: 1,
-            title: 'Black Clover',
-            image: 'https://static3.mangalivre.com/capas/XzJfT6TjJArZeQjuoWyWSA/1751/external_cover.jpg',
-            chapter: 145
-          },
-          {
-            id: 2,
-            title: 'Kenja no Mago',
-            image: 'https://static3.mangalivre.com/capas/Oa1oidkFmjRVjVIGoe-H8Q/3902/capa.jpg',
-            chapter: 31
-          },
-          {
-            id: 3,
-            title: 'Solo Leveling',
-            image: 'https://unionleitor.top/assets/uploads/mangas/8e157c06.jpg',
-            chapter: 110
-          },
-          {
-            id: 4,
-            title: 'I Am The Sorcerer King',
-            image: 'https://avt.mkklcdnv6.com/35/c/18-1583498457.jpg',
-            chapter: 84
-          },
-          {
-            id: 5,
-            title: 'Paragon of Destruction',
-            image: 'https://unionleitor.top/assets/uploads/mangas/017f5320.jpg',
-            chapter: 29
-          },
-          {
-            id: 6,
-            title: 'Dungeon Reset',
-            image: 'https://static3.mangalivre.com/capas/bVbDK_6TnBOqmH_8CB1AZg/9375/external_cover.jpg',
-            chapter: 19
-          },
-          {
-            id: 7,
-            title: 'Tales of Demons End Gods',
-            image: 'https://static3.mangalivre.com/capas/gD0Oa7y2CPW5rtPpe0HmRA/2412/external_cover.jpg',
-            chapter: 271
-          },
-          {
-            id: 8,
-            title: 'Release That Witch',
-            image: 'https://static3.mangalivre.com/capas/GkKU9QVql64Bi33TZJi_6A/7966/external_cover.jpg',
-            chapter: 105
-          },
-          {
-            id: 9,
-            title: 'The Bengining After The End',
-            image: 'https://static3.mangalivre.com/capas/izI5uyu6mXDqVc5AmKVaDw/7403/external_cover.jpg',
-            chapter: 110
-          },
-          {
-            id: 10,
-            title: `A Returner's Magic Should be Special`,
-            image: 'https://static3.mangalivre.com/capas/RGs3BU2aa8pUN7hARCKSyQ/7718/external_cover.jpg',
-            chapter: 97
-          },
-          {
-            id: 11,
-            title: 'Survival of the Sword King',
-            image: 'https://static3.mangalivre.com/capas/7nZcVEienUiEzTxguklXbQ/9066/external_cover.jpg',
-            chapter: 36
-          },
-          {
-            id: 12,
-            title: 'Fights Break Sphere',
-            image: 'https://static3.mangalivre.com/capas/VQpv4xINwz2pmep2VGpqkg/2330/external_cover.jpg',
-            chapter: 290
-          },
+          
         ], 
         result:[],    
       }      
       // this.MMPagination().handleClick() = this.MMPagination().handleClick().bind(this)
+    }
+
+    componentDidMount(){
+      this.getData();
+    }
+
+    async getData (){     
+      Api.getShowMangaSearch().then(
+        res => {
+          
+          if (res.status === 'success'){
+            let data = [];
+            res.data.data.map((x,y)=> {
+              console.log()
+                data.push({ 
+                  id: x.id,
+                  title: x.title,
+                  image: `data:image/png;base64,${x.avatar}`,
+                }) 
+            })           
+            this.setState({manga: data})
+          }
+        }        
+      )
     }
   
 

@@ -1,0 +1,15 @@
+.react-datepicker-wrapper {
+  display: block
+}
+.react-date-picker__wrapper{
+  border: none
+}
+.react-date-picker__calendar--open {
+  top: 100% !important;
+  bottom: unset !important;
+  position: fixed;
+  overflow: auto
+}
+.react-calendar{
+  position: fixed;
+}
