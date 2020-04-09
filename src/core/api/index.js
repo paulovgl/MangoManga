@@ -389,5 +389,20 @@ const ApiService = {
     })
   },
 
+  getDetailsLoggedUser: async () => {
+    return await axios.get(`${endpoint}/auth/getDetails`)
+      .then( response => response.data )
+      .catch(error => {
+        if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+        }
+        else{
+          if(error.response.hasOwnProperty('data') && error.response.data.hasOwnProperty('content') ){
+            return error.response.data
+          }
+        }
+      })
+  }, 
+
 }
 export default ApiService;

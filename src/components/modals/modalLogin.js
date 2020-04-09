@@ -5,6 +5,10 @@ import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalF
 import {StyleSheet, css} from 'aphrodite';
 import {MMButton, MMBtnLoginWith} from '../buttons/'
 import {withRouter} from 'react-router'
+import { connect } from 'react-redux';
+import {login} from '../../core/redux/actions/authActions'
+import PropTypes from 'prop-types';
+import PopUp from '../notifications/index'
 
 const styles = StyleSheet.create({
   btn:{
@@ -51,7 +55,19 @@ class ModalLogin extends Component {
   }
 
   submitForm(){
-    this.props.history.push('/')
+    this.props.login(this.state).then(res => {
+      console.log(res)
+      if(res.status === 'success'){
+
+        this.props.history.push('/')
+        }
+      else if( res.status === 'error'  ){      
+        res.content.map((x,y)=> {
+           PopUp.showMessage('error', x.message )
+      })
+      }
+    })
+    // 
   }
 
 
@@ -92,4 +108,9 @@ class ModalLogin extends Component {
     }
   }
 
-  export default withRouter(ModalLogin)
+  ModalLogin.propTypes = {
+    login: PropTypes.func.isRequired
+  }
+
+  // ModalLogin = 
+  export default connect(null, {login})(withRouter(ModalLogin));
