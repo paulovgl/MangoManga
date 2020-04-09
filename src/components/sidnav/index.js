@@ -52,23 +52,23 @@ class Sidnav extends Component {
             dropdown: [
                 {
                     title: 'Manga',
-                    eventKey: 'manga/create', 
+                    eventKey: 'manga/show', 
                 },
                 {
                     title: 'Editora',
-                    eventKey: 'editora/create', 
+                    eventKey: 'editora/show', 
                 },
                 {
                     title: 'Autor',
-                    eventKey: 'author/create', 
+                    eventKey: 'author/show', 
                 },
                 {
                     title: 'Gênero',
-                    eventKey: 'genero/create', 
+                    eventKey: 'genero/show', 
                 },
                 {
                     title: 'Scan',
-                    eventKey: 'scans/create', 
+                    eventKey: 'scans/show', 
                 },
                 {
                     title: 'Capítulos',

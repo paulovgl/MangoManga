@@ -6,6 +6,20 @@ export const themes = {
     body: {
       background: 'rgba(255, 255, 255,0)',
     },
+    datatables:{
+      dark: false,
+      thead: {
+         background: 'orange darken-2',
+         color: true
+        },
+      tbody: {
+         background: 'white',
+         color: false 
+        }
+    },
+    spinner: {
+      color: '#d32f2f',   
+    },
     input:{
       label: {
         color: '#d32f2f',        
@@ -138,6 +152,20 @@ export const themes = {
   dark: {
     body: {
       background: 'rgba(62, 69, 81,0.8)' 
+    },
+    datatables:{
+      dark: true,
+      thead: {
+         background: 'unique-color-dark',
+         color: true
+        },
+      tbody: {
+         background: 'stylish-color-dark',
+         color: true 
+        }
+    },
+    spinner: {
+      color: '#d32f2f',   
     },
     input:{
       label: {

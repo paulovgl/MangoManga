@@ -47,7 +47,7 @@ const styles = (theme) => StyleSheet.create({
         chapter: 84  
       },
       {
-        id: 5,
+        id: 5, 
         title: 'Paragon of Destruction',
         image: 'https://unionleitor.top/assets/uploads/mangas/017f5320.jpg',
         chapter: 29  

@@ -8,6 +8,7 @@ import moment from 'moment';
 import {MMTabs} from '../../components/tabs'
 import {MMComments} from '../../components/comments/'
 import {MMTheme} from '../../components/theme'
+import {MMSpinner} from '../../components/loading'
 import Api from '../../core/api'
 import PopUp from '../../components/notifications'
 import imgdef from '../../images/mangabg.png'
@@ -250,10 +251,14 @@ export default class Manga extends Component {
           chapter.push({id: i.id, date: i.date, title: i.title, number: i.capitulo })
         })
         let newdata = this.state.manga;
-        newdata[0].chapter = chapter
-        this.setState({manga: newdata})
-        // this.setState({manga: { chapter: chapter }})
-       
+        if(this.state.manga.length > 0){
+          newdata[0].chapter = chapter
+          this.setState({manga: newdata})
+        }
+        else{ 
+          this.props.history.push('/');
+          PopUp.showMessage('error', 'Manga não cadastrado')
+        }         
       }
     })
 
@@ -412,7 +417,7 @@ export default class Manga extends Component {
       )
     }
     else{
-      return <h1>Carregando...</h1>
+      return <MMSpinner />
     }
   }
   

@@ -5,10 +5,10 @@ import {MDBContainer} from 'mdbreact'
 import {StyleSheet, css} from 'aphrodite'
 import {MMTheme, themes} from '../theme' 
 
-// images
-import bg1 from '../../images/bg2.jpg'
-import bg2 from '../../images/bg1.png'
 
+// images
+import bg1 from '../../images/bg2.webp'
+import bg2 from '../../images/bg1.webp'
 
 const images = () => {
   let items = [
