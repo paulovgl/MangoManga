@@ -1,31 +1,31 @@
 import React from 'react'
 import requireAuth from '../../utils/requireAuth'
 import {PrivateRoute} from '../privateRoutes'
-import GeneroRegister from "../../../pages/generos/register"
-import GeneroEdit from "../../../pages/generos/edit"
-import GeneroListagem from "../../../pages/generos/listagem"
+import EditoraRegister from "../../../pages/editora/register"
+import EditoraEdit from "../../../pages/editora/edit"
+import EditoraListagem from "../../../pages/editora/listagem"
 
 
-const prefix = '/genero'
+const prefix = '/editora'
 
 const routers = [
 
   {
     patch: `${prefix}/show`,
     type: 'private',
-    component: GeneroListagem,
+    component: EditoraListagem,
     roles: ['administrador', 'editor']
   },
   {
     patch: `${prefix}/:id/edit`,
     type: 'private',
-    component: GeneroEdit,
+    component: EditoraEdit,
     roles: ['administrador', 'editor']
   },
   {
     patch: `${prefix}/create`,
     type: 'private',
-    component: GeneroRegister,
+    component: EditoraRegister,
     roles: ['administrador', 'editor']
   },
 ]

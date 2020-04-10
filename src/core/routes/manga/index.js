@@ -1,31 +1,32 @@
 import React from 'react'
 import requireAuth from '../../utils/requireAuth'
 import {PrivateRoute} from '../privateRoutes'
-import GeneroRegister from "../../../pages/generos/register"
-import GeneroEdit from "../../../pages/generos/edit"
-import GeneroListagem from "../../../pages/generos/listagem"
+
+import Manga from "../../../pages/manga/"
+import MangaListagem from "../../../pages/manga/listagem"
+import MangaRegister from "../../../pages/manga/register"
 
 
-const prefix = '/genero'
+const prefix = '/manga'
 
 const routers = [
 
   {
     patch: `${prefix}/show`,
     type: 'private',
-    component: GeneroListagem,
-    roles: ['administrador', 'editor']
+    component: MangaListagem,
+    roles: ['administrador', 'editor', 'user']
   },
   {
-    patch: `${prefix}/:id/edit`,
+    patch: `${prefix}/:id/show`,
     type: 'private',
-    component: GeneroEdit,
-    roles: ['administrador', 'editor']
+    component: Manga,
+    roles: ['administrador', 'editor', 'user']
   },
   {
     patch: `${prefix}/create`,
     type: 'private',
-    component: GeneroRegister,
+    component: MangaRegister,
     roles: ['administrador', 'editor']
   },
 ]

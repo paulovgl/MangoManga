@@ -133,7 +133,7 @@ class MMInput extends Component {
 
           {props.label ?  <label htmlFor={props.id}><span className={` ${css(styles(theme).swsLabel)} control-label `} >{props.label}:</span ></label>  : ''}       
           <input
-            onKeyDown={props.onKeyDown? props.onKeyDown : '' }
+            onKeyDown={props.onKeyDown? props.onKeyDown : undefined }
             style={{onHover:{color:'red'}, }}
             type={props.type}
             className={` ${css(styles(theme).swsInput)}   form-control form-control-md input ${props.validation ? 'validate' : ''} ${props.className ? props.className : ''}`}

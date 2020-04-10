@@ -3,6 +3,7 @@ import SideNav, { NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import { withRouter } from 'react-router';
 import {MDBIcon } from 'mdbreact';
 import logo from '../../images/logo.png'
+import {connect} from 'react-redux'
 
 
 class Sidnav extends Component {
@@ -23,6 +24,27 @@ class Sidnav extends Component {
     }
    
   renderNav = () => {
+
+
+    function displayinMenu(permissions, roles){
+        if (permissions !== undefined && Array.isArray(permissions)) {              
+            let keys = []                
+            Object.entries(roles).map((e, f) => {
+                let search = permissions.find((k) => k === e[0])
+                if (search !== undefined) {
+                    if (search === e[0]) {
+                        keys.push(e[1])
+                    }
+                }
+            })
+            let hasPermission = keys.find((f => f === true))
+
+            if (hasPermission === undefined) {
+                return 'none'
+            }
+            return 'block'
+        } 
+    }      
       const nav = [
 
         {
@@ -30,18 +52,23 @@ class Sidnav extends Component {
             title: 'Início',
             icon: { size: '2x', icon: 'home' },
             eventKey: '',
+            permission: ['administrador', 'editor', 'user'],
         },
         {
             type: 'unique',
             title: 'Perfil',
             icon: { size: '2x', icon: 'user' },
             eventKey: 'profile',
+            permission: ['administrador', 'editor', 'user'],
+
         },
         {
             type: 'unique',
             title: 'Buscar',
             icon: { size: '2x', icon: 'search' },
             eventKey: 'search',
+            permission: ['administrador', 'editor', 'user'],
+
         },
         
         {
@@ -49,30 +76,45 @@ class Sidnav extends Component {
             title: 'Cadastro',
             eventKey: 'configure',
             icon: { size: '2x', icon: 'book-open' },
+            permission: ['administrador', 'editor', 'user'],
             dropdown: [
                 {
                     title: 'Manga',
                     eventKey: 'manga/show', 
+                    permission: ['administrador', 'editor', 'user'],
+
                 },
                 {
                     title: 'Editora',
                     eventKey: 'editora/show', 
+                    permission: ['administrador', 'editor'],
+
                 },
                 {
                     title: 'Autor',
                     eventKey: 'author/show', 
+                    permission: ['administrador', 'editor'],
+
                 },
                 {
                     title: 'Gênero',
-                    eventKey: 'genero/show', 
+                    eventKey: 'genero/show',
+                    permission: ['administrador', 'editor'],
+
+
                 },
                 {
                     title: 'Scan',
                     eventKey: 'scans/show', 
+                    permission: ['administrador', 'editor'],
+
+
                 },
                 {
                     title: 'Capítulos',
                     eventKey: 'capitulos/create', 
+                    permission: ['administrador', 'editor'],
+
                 },
                 
             ]
@@ -82,14 +124,19 @@ class Sidnav extends Component {
             title: 'Configuração',
             eventKey: 'configure',
             icon: { size: '2x', icon: 'cogs' },
+            permission: ['administrador', 'editor'],
             dropdown: [
                 {
                     title: 'Administrador',
                     eventKey: 'admin/create', 
+                    permission: ['administrador'],
+
                 },   
                 {
                     title: 'Editor',
-                    eventKey: 'editor/create', 
+                    eventKey: 'editor/create',
+                    permission: ['administrador'],
+
                 },               
             ]
         }
@@ -99,7 +146,7 @@ class Sidnav extends Component {
       return nav?.map((x,y)=> {
           if(x.type === 'unique'){
              return  (
-                <NavItem key={y} eventKey={x.eventKey}>
+                <NavItem style={{display: displayinMenu(x.permission, this.props.roles)}} key={y} eventKey={x.eventKey}>
                 <NavIcon>
                     <MDBIcon style={{color: '#fff'}} icon={x.icon.icon} size={x.icon.size} />
                 </NavIcon>
@@ -111,7 +158,7 @@ class Sidnav extends Component {
           }
           else if (x.type === 'multiple'){
               return (
-            <NavItem key={y} eventKey={x.eventKey} >
+            <NavItem key={y}  navitemStyle={{display:displayinMenu(x.permission, this.props.roles)}} eventKey={x.eventKey}  >
             <NavIcon>
                 <MDBIcon style={{color: '#fff'}} icon={x.icon.icon} size={x.icon.size} />
             </NavIcon>
@@ -124,7 +171,7 @@ class Sidnav extends Component {
                             //  navitemStyle={{}}
                              eventKey={i.eventKey} 
                             //  navitemClassName={css(styles(theme).navItem)}
-                            //  navitemStyle={{display:displayinMenu(i.permission, this.props.roles)}}
+                             navitemStyle={{display:displayinMenu(i.permission, this.props.roles)}}
                              >
                         <NavText>
                             {i.title}
@@ -171,5 +218,12 @@ class Sidnav extends Component {
   
   }
 
-  export default withRouter(Sidnav)
+  function mapStateToProps(state) {
+    return {
+        isAuthenticated: state.auth.isAutenticated,
+        roles: state.roles.roles
+    };
+}
+
+export default connect(mapStateToProps)(withRouter(Sidnav)); 
 

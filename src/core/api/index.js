@@ -1,7 +1,17 @@
 import axios from 'axios';
 import {endpoint} from '../endpoints';
+import Token from '../token'
 
 const ApiService = {
+
+
+  // Validando Auth
+
+  isValidToken: () => {
+    return axios.get(`${endpoint}/auth/isvalid`, { headers: Token.sendToken() }).catch(error => {
+      return 'ERROR'
+    })
+  },
 
   // Editora
 

@@ -32,13 +32,12 @@ class App extends Component {
 
   state = {loading: false}
 
-
-componentWillMount(){    
-  this.data();
-  setTimeout(() => {
-    this.setState({loading: true});
-  }, 1000)
-}
+  componentWillMount(){    
+    this.data();
+    setTimeout(() => {
+      this.setState({loading: true});
+    }, 1000)
+  }
 
 async data(){
   if (Token.getToken()) {   
@@ -46,15 +45,14 @@ async data(){
     await Api.getDetailsLoggedUser().then(
       async (response) => {   
         // console.log(response)
-        let usuario = await response.data.data
-        console.log(usuario)
+        let usuario = await response.data.data        
         usuario = {
           email: usuario.email,
           username: usuario.username,
           avatar: usuario.avatar
         }
-        console.log(usuario)
-        store.dispatch(setCurrentUser(usuario))   
+        // console.log(usuario)
+        await store.dispatch(setCurrentUser(usuario))   
         let roles = response.data.data.tipo_user            
               if(roles === '0'){
                 roles = {
@@ -78,7 +76,7 @@ async data(){
                 }
               } 
               console.log(roles)
-              store.dispatch(setRolesUser(roles))       
+              await store.dispatch(setRolesUser(roles))       
       }   
     )         
   };

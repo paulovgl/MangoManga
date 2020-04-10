@@ -7,6 +7,9 @@ import {
   import {withRouter} from 'react-router-dom';
   import './header.scss' 
   import {MMSwitchTheme} from '../../components/switch';
+  import { connect } from 'react-redux';
+  import {logout} from '../../core/redux/actions/authActions'
+  import PropTypes from 'prop-types';
 
 
   class Header extends Component {
@@ -19,6 +22,35 @@ import {
         avatar: null,     
       };
     }
+
+
+  logout(e){
+    e.preventDefault();
+    this.props.logout();
+    this.props.push('/')
+  }  
+
+  setUsername = (user) => {
+    if(user.username === null || user.username === undefined){
+      return ''
+    }
+    else{
+      return  user.username
+    }
+  }
+
+  setAvatar = (user) => {
+    if(user.avatar === null){
+      return <MDBIcon icon="user" className="mr-1" />
+    }
+    else{
+      return (
+        <img src={`data:image/png;base64,${user.avatar}`} className="rounded-circle z-depth-0" style={{
+          height: "28px", padding: 0
+        }} alt="" />
+      )
+    }
+  }
   
   toggleCollapse = () => {
     this.setState({ isOpen: !this.state.isOpen });
@@ -34,6 +66,7 @@ import {
   }
   
   render(){
+    const {isAuthenticated, user} = this.props.auth
   return (   
       // <withRouter>
       <MDBNavbar color='red darken-2' dark expand='md' className={this.props.expanded === false ? "closed" : "opened"} >
@@ -50,18 +83,7 @@ import {
               </MDBBtn>   
                 <span className='pl-3' style={{fontSize: 22, color:"#fff", fontWeight:"bold",  fontFamily: 'Comic Neue'}}>MangoManga</span>
             </MDBNavItem>           
-          </MDBNavbarNav>           
-
-
-            {/* <MDBNavbarNav className='mx-auto'>
-              <MDBNavItem>
-                <MDBFormInline waves>
-                  <div className="md-form my-0">
-                    <input className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
-                  </div>
-                </MDBFormInline>
-              </MDBNavItem>              
-            </MDBNavbarNav> */}
+          </MDBNavbarNav> 
 
           <MDBNavbarNav right>
             
@@ -78,7 +100,8 @@ import {
           <MDBNavItem>
               <MDBDropdown>
                 <MDBDropdownToggle nav caret>
-                  <MDBIcon icon="user" className="mr-1" />
+                    {this.setAvatar(user)}
+                    <span style={{fontSize: 15, marginLeft: 4, fontWeight: 500}}>asas{this.setUsername(user)}</span> 
                 </MDBDropdownToggle>
                 <MDBDropdownMenu className="dropdown-default" right>                  
                 <MDBDropdownItem onClick={()=> {this.props.history.push('/profile/edit')}}>Editar Usuário</MDBDropdownItem>
@@ -95,4 +118,17 @@ import {
   }
 }
 
-export default withRouter(Header)
+Header.propTypes = {
+  auth: PropTypes.object.isRequired,
+  roles: PropTypes.object.isRequired,
+  logout: PropTypes.func.isRequired
+}
+
+function mapStateToProps(state){
+  return {
+    auth: state.auth,
+    roles: state.roles
+  }
+}
+
+export default connect(mapStateToProps,{logout})(withRouter(Header)) 

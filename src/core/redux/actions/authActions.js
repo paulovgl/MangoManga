@@ -3,9 +3,6 @@ import setAuthorizationToken from '../../utils/setAuthorizationToken';
 import {endpoint} from '../../endpoints'
 import Token from '../../token'
 import { SET_CURRENT_USER, SET_ROLES_USER } from './types';
-import PopUp from '../../../components/notifications' 
-import Api from '../../api/index'
-
 
 export function setCurrentUser(user){
   return {
@@ -40,36 +37,36 @@ export function login(user){
           if(response.headers["x-access-token"] !== undefined){
             Token.setToken(response.headers["x-access-token"])
             setAuthorizationToken(response.headers["x-access-token"])
-            let roles = response.data.data.tipo_user            
+            let roles = await response.data.data.tipo_user            
               if(roles === '0'){
-                roles = {
+                roles = await {
                   administrador: false,
                   user: true,
                   editor: false
                 }
               }
               else if(roles === '1'){
-                roles = {
+                roles = await {
                 administrador: false,
                 user: false,
                 editor: true
                 }
               }
               else if(roles === '2'){
-                roles = {
+                roles = await {
                 administrador: true,
                 user: false,
                 editor: false
                 }
               }
-              dispatch(setRolesUser(roles))   
-              let usuario = response.data.data
-              usuario = {
+              await dispatch(setRolesUser(roles))   
+              let usuario = await response.data.data
+              usuario = await  {
                 email: usuario.email,
                 username: usuario.username,
                 avatar: usuario.avatar
               } 
-              dispatch(setCurrentUser(usuario))    
+              await dispatch(setCurrentUser(usuario))    
               return response.data  
           }
       })
