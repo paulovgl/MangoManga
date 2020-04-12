@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Main} from '../../components/main'
-import { MDBRow, MDBCol, MDBCard, MDBCardImage, MDBIcon, MDBCardBody} from 'mdbreact'
+import { MDBRow, MDBCol, MDBCard, MDBCardImage, MDBIcon, MDBCardBody } from 'mdbreact'
 import './manga.scss'
 import { StyleSheet, css } from 'aphrodite';
 import MMRating from '../../components/rating'
@@ -183,10 +183,12 @@ export default class Manga extends Component {
     const id =  this.props.match.params.id 
     let data = [];
      let chapter = [];
+     let add = Boolean
     await Api.getShowManga(id).then(res => {
       if(res.status === 'success'){
         
-        res.data.data.map((x,y)=> {         
+        res.data.data.map((x,y)=> {   
+           add = x.add;      
            let editoras = []
            if (x.editora){
              editoras =  [{name: x.editora.name, url: x.editora.url}]
@@ -215,7 +217,7 @@ export default class Manga extends Component {
             scans: scans,
             editora: editoras,
             status: status[x.status],
-            rating: 4,
+            rating: x.rating,
             // A ser configurado ainda
             chapter: [
             //   {
@@ -234,7 +236,7 @@ export default class Manga extends Component {
           })
         })
 
-        this.setState({manga: data})
+        this.setState({manga: data, add: add})
         // console.log(this.state.manga)
       }
       else if( res.status === 'error'){
@@ -265,7 +267,32 @@ export default class Manga extends Component {
   }
 
   addManga(){
-    this.setState({add: !this.state.add})  
+    Api.addManga(this.state.manga[0].id).then(res => {      
+      if(res.status === 'success'){
+        this.setState({add: res.data.data.add})  
+      }
+      else if(res.status === 'error'){
+        res.content.map((x,y)=> {
+          PopUp.showMessage('error', x.message)
+        })
+      }
+    })
+   
+  }
+
+  removeManga(){  
+
+    Api.addManga(this.state.manga[0].id).then(res => {      
+      if(res.status === 'success'){
+        this.setState({add: res.data.data.add})  
+      }
+      else if(res.status === 'error'){
+        res.content.map((x,y)=> {
+          PopUp.showMessage('error', x.message)
+        })
+      }
+    })
+   
   }
 
   showNew(data, theme){
@@ -334,9 +361,9 @@ export default class Manga extends Component {
           <MDBRow>
             <MDBCol lg='3' md='12'>
               <div>
-                <MDBCard className={css(styles(theme).card)} onClick={()=>{this.addManga()}}>                
+                <MDBCard className={css(styles(theme).card)} onClick={()=>{this.state.add ? this.addManga() : this.removeManga()}}>                
                       <MDBCardImage className="img-fluid" src={this.state.manga[0].image !== null ? this.state.manga[0].image : imgdef } waves={true} />
-                      <MDBCardBody waves={true} onClick={()=>{this.addManga()}} 
+                      <MDBCardBody waves={true}
                           className={`
                             ${css(styles(theme).mangaButton)} 
                             ${this.state.add ? css(styles(theme).mangaRemove) : css(styles(theme).mangaAdd) }
@@ -350,7 +377,7 @@ export default class Manga extends Component {
   
             <MDBCol lg='9' md='12'>
   
-                <MMRating initialRating={this.state.manga[0].rating} />
+                <MMRating mangaId={this.state.manga[0].id} votes={this.state.manga[0].rating.n_votes} initialRating={this.state.manga[0].rating.rating} />
               
               <div>
                 <div>

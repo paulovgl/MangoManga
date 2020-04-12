@@ -2,27 +2,42 @@ import React, { Component, Fragment } from 'react';
 import {Main} from '../../components/main';
 import {MDBRow, MDBCol} from 'mdbreact';
 import {MMCard} from '../../components/card/'
+import Api from '../../core/api'
 
 export default class Profile extends Component {
 
   state = {
-    manga: [
-      {
-         id: 1,
-         title: 'Black Clover',
-         image: 'https://static3.mangalivre.com/capas/XzJfT6TjJArZeQjuoWyWSA/1751/external_cover.jpg',
-         chapter: 145
-       },
-       {
-        id: 6,
-        title: 'Dungeon Reset',
-        image: 'https://static3.mangalivre.com/capas/bVbDK_6TnBOqmH_8CB1AZg/9375/external_cover.jpg',
-        chapter: 19  
-      },
+    finished: Number(0),
+    manga: [     
     ]
   }
 
-  countManga(){
+
+  componentDidMount(){
+    this.getData();
+    this.setState({finished: this.state.manga.filter((f)=> f.status === '2').length})
+  }
+
+  async getData (){     
+    Api.getShowMangaUser().then(
+      res => {        
+        if (res.status === 'success'){
+          let data = [];
+          res.data.data.map((x,y)=> {
+            console.log()
+              data.push({ 
+                id: x.id,
+                title: x.title,
+                image: `data:image/png;base64,${x.avatar}`,
+              }) 
+          })           
+          this.setState({manga: data})
+        }
+      }        
+    )
+  }
+
+  Manga(){
     if(this.state.manga.length > 0){
       return (
         <MDBRow>
@@ -41,22 +56,25 @@ export default class Profile extends Component {
 
   }
 
-  countMangaFinished(){  
+  MangaFinished(){  
     if(this.state.manga.length > 0){
-      return (
-        <MDBRow>
-          {
-            this.state.manga.slice(0).reverse().map((x, y) => {
-              return (
-                
-                <MDBCol  key={`${y}mangaFinished`} lg='2' md='3' sm='6' >
-                  <MMCard title={x.title} id={x.id} image={x.image} chapter={x.chapter} /> 
-                </MDBCol>
-            )
-          })
-        }
-        </MDBRow>
-      )
+      
+      let finished  = this.state.manga.filter((f) => f.status === '2');     
+      if(finished.length > 0){
+        return (
+          <MDBRow>
+            {
+              this.finished.map((x, y) => {             
+                  return (                
+                    <MDBCol  key={`${y}mangaFinished`} lg='2' md='3' sm='6' >
+                      <MMCard title={x.title} id={x.id} image={x.image} chapter={x.chapter} /> 
+                    </MDBCol>
+                )                          
+            })
+          }
+          </MDBRow>
+        )
+      }     
     }
     
   }
@@ -71,12 +89,12 @@ export default class Profile extends Component {
 
             <div>
                 <h5 className='text-left mb-3' style={{fontWeight: 500}}>Meus Mangas ({this.state.manga.length})</h5>
-                {this.countManga()}
+                {this.Manga()}
             </div>
 
             <div>
-                <h5 className='text-left mb-3'style={{fontWeight: 500}}>Mangas Finalisados ({this.state.manga.length})</h5>
-                {this.countMangaFinished()}
+                <h5 className='text-left mb-3'style={{fontWeight: 500}}>Mangas Finalizados ({this.state.finished})</h5>
+                {this.MangaFinished()}
             </div>
 
         </div>

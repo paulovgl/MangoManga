@@ -346,6 +346,57 @@ const ApiService = {
       })
   },
 
+  getShowMangaUser: async () => {
+    return await axios.get(`${endpoint}/manga/user/add/show/`)
+      .then( response => response.data )
+      .catch(error => {
+        if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+        }
+        else{
+          if(error.response.hasOwnProperty('data') && error.response.data.hasOwnProperty('content') ){
+            return error.response.data
+          }
+        }
+      })
+  },
+
+  addManga: async(id) => {
+    return await axios.post(`${endpoint}/manga/user/add/${id}/`)
+    .then(response =>{return response.data} )
+    .catch(error => {
+      if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+      }
+      else{
+        console.log(error)
+        const { response } = error;
+        const { request, ...errorObject } = response; // take everything but 'request'
+        if(errorObject.hasOwnProperty('data') && errorObject.data.hasOwnProperty('content')){
+          return  errorObject.data          
+        }
+      }
+    })
+  },
+
+  addMangaRating: async (id , data) => {
+    return await axios.post(`${endpoint}/manga/rating/${id}/`, data)
+    .then(response =>{return response.data} )
+    .catch(error => {
+      if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+      }
+      else{
+        console.log(error)
+        const { response } = error;
+        const { request, ...errorObject } = response; // take everything but 'request'
+        if(errorObject.hasOwnProperty('data') && errorObject.data.hasOwnProperty('content')){
+          return  errorObject.data          
+        }
+      }
+    })
+  },
+
   // Capítulos
   createCapitulo: async (dados) => {    
     return await axios.post(`${endpoint}/capitulo/create`, dados, {})

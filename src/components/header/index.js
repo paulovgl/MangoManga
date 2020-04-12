@@ -101,7 +101,7 @@ import {
               <MDBDropdown>
                 <MDBDropdownToggle nav caret>
                     {this.setAvatar(user)}
-                    <span style={{fontSize: 15, marginLeft: 4, fontWeight: 500}}>asas{this.setUsername(user)}</span> 
+                    <span style={{fontSize: 15, marginLeft: 4, fontWeight: 500}}>{this.setUsername(user)}</span> 
                 </MDBDropdownToggle>
                 <MDBDropdownMenu className="dropdown-default" right>                  
                 <MDBDropdownItem onClick={()=> {this.props.history.push('/profile/edit')}}>Editar Usuário</MDBDropdownItem>
