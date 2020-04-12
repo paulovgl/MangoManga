@@ -431,6 +431,24 @@ const ApiService = {
       })
   },
 
+  readCap: async (idCap, idManga) => {    
+    return await axios.post(`${endpoint}/capitulo/read/${idManga}/${idCap}`)
+    .then(response =>{return response.data} )
+    .catch(error => {
+      if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+      }
+      else{
+        console.log(error)
+        const { response } = error;
+        const { request, ...errorObject } = response; // take everything but 'request'
+        if(errorObject.hasOwnProperty('data') && errorObject.data.hasOwnProperty('content')){
+          return  errorObject.data
+        }
+      }
+    })
+  },
+
   // Administrador
   createAdministrador: async (dados) => {    
     return await axios.post(`${endpoint}/user/admin/create`, dados, {})
@@ -463,7 +481,41 @@ const ApiService = {
           }
         }
       })
-  }, 
+  },
+  
+  getShowEditProfile: async () => {
+    return await axios.get(`${endpoint}/profile/edit`)
+      .then( response => response.data )
+      .catch(error => {
+        if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+        }
+        else{
+          if(error.response.hasOwnProperty('data') && error.response.data.hasOwnProperty('content') ){
+            return error.response.data
+          }
+        }
+      })
+  },
+
+  updateProfile: async (dados) => {    
+    return await axios.put(`${endpoint}/profile/update`, dados, {})
+    .then(response =>{return response.data} )
+    .catch(error => {
+      if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+      }
+      else{
+        console.log(error)
+        const { response } = error;
+        const { request, ...errorObject } = response; // take everything but 'request'
+        if(errorObject.hasOwnProperty('data') && errorObject.data.hasOwnProperty('content')){
+          return  errorObject.data          
+        }
+      }
+    })
+  },
+  
 
 }
 export default ApiService;

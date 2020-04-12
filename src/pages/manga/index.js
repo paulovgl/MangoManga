@@ -131,8 +131,12 @@ const styles = (theme) =>  StyleSheet.create({
   mangaEditora: {
     color: theme.manga.description.editora.color,
     fontWeight: 400,
+  },
+  read:{
+    color: theme.manga.description.scans.background
   }
-  
+
+    
 });
 
 
@@ -217,22 +221,8 @@ export default class Manga extends Component {
             scans: scans,
             editora: editoras,
             status: status[x.status],
-            rating: x.rating,
-            // A ser configurado ainda
-            chapter: [
-            //   {
-            //     id: 1,
-            //     date: '02/08/19',
-            //     title: 'Yunoo!!',
-            //     number: 1             
-            //   },
-            //   {
-            //    id: 2,
-            //    date: '04/04/2020',
-            //    title: 'Yunoo eu te amo!!',
-            //    number: 2             
-            //  }
-            ]  
+            rating: x.rating,           
+            chapter: [ ]  
           })
         })
 
@@ -250,7 +240,7 @@ export default class Manga extends Component {
     await Api.getShowCapituloManga(id).then(res => {
       if(res.status === 'success'){
         res.data.data.map((i,j) => {
-          chapter.push({id: i.id, date: i.date, title: i.title, number: i.capitulo })
+          chapter.push({id: i.id, date: i.date, title: i.title, number: i.capitulo, read: i.read })
         })
         let newdata = this.state.manga;
         if(this.state.manga.length > 0){
@@ -295,6 +285,21 @@ export default class Manga extends Component {
    
   }
 
+  readCap(idCap, position){
+    Api.readCap(idCap, this.state.manga[0].id).then(res => {      
+      if(res.status === 'success'){
+        let manga = this.state.manga;
+        manga[0].chapter[position].read = res.data.data.read
+        this.setState({manga: manga})
+      }
+      else if(res.status === 'error'){
+        res.content.map((x,y)=> {
+          PopUp.showMessage('error', x.message)
+        })
+      }
+    })
+  }
+
   showNew(data, theme){
     let today = moment().startOf('day');
     console.log(today)
@@ -323,7 +328,7 @@ export default class Manga extends Component {
       <center><h6 className={`${css(styles(theme).chapterTitle)} mt-2`}>SEM CAPÍTULOS NO MOMENTO!!</h6></center>
        : ''}
        {
-         this.state.manga[0].chapter.map((x,y)=>{
+         this.state.manga[0].chapter.map((x,y)=>{           
            return (
             <MDBRow key={`${y}cc`} className='align-middle mt-2 mb-2'>
             <MDBCol md='9' className='align-middle' >
@@ -343,7 +348,7 @@ export default class Manga extends Component {
             <MDBCol md='3' className='align-middle'>
               <div className='text-right'>
                 {this.showNew(x.date, theme)}
-                <a className='chaptherView'><MDBIcon icon='eye' size='1x' /></a>
+                <a  onClick={()=> this.readCap(x.id, y)} className={`chaptherView ${x.read ? css(styles(theme).read): ''}`}><MDBIcon icon='eye' size='1x' /></a>
               </div>
             </MDBCol>
             </MDBRow>
