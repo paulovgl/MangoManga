@@ -42,6 +42,7 @@ const style = (theme) => StyleSheet.create({
     color: '#757575'
   },
   flagReportPosting: {
+    fontSize: 13,
     color: '#e0e0e0',
     cursor: 'pointer',
     ':hover': {
@@ -168,7 +169,7 @@ class MMComments extends Component {
 
   componentDidMount() {
     connection.connect();
-    subscription = connection.subscribe(`posts`, { post: this.handleMessageAdd, like: this.handleLikesAdd });
+    subscription = connection.subscribe(`posts`, { post: this.handleMessageAdd, like: this.handleLikesAdd, comment: this.handleCommentsAdd });
     this.getData();
   }
 
@@ -189,6 +190,16 @@ class MMComments extends Component {
     let idx = await a.findIndex(item => item.id === parseInt(id))
     a[idx].__meta__.likes_count = likes ;
     this.setState({comments: a});
+  }
+
+  handleCommentsAdd = async (message) => {    
+    let { id, data } = message
+    let a = await this.state.comments.slice();
+    let idx = await a.findIndex(item => item.id === parseInt(id))
+    let comments = await a[idx].comments
+    await comments.push(data)
+    this.setState({comments: a})
+    
   }
 
   async getData() {
@@ -221,6 +232,7 @@ class MMComments extends Component {
     Api.createPost(id, data).then(res => {
       if (res.status !== undefined && res.status === 'success') {
         PopUp.showMessage('success', res.data.message)
+        this.setState({comment: ''})
       }
       else {
         PopUp.showMessage('error', 'Houve um problema com sua solicitação!!')
@@ -230,6 +242,7 @@ class MMComments extends Component {
 
   listInput = event => {
     const { name, value } = event.target
+    console.log(name, value)
     this.setState({
       [name]: value
     })
@@ -245,27 +258,29 @@ class MMComments extends Component {
     this.setState({ comments: items });
   }
 
-  addcommentReplay(e, idComentario) {
-    if (e.key === "Enter") { //pega o evento de clicar com o Enter
-      if (this.state.commentReplay !== '') {
-        let newitem = {
-          id_show: 1, //id da série
-          id: parseInt(Math.random() * (10000 - 1) + 1), //pra gerar um id por enquanto
-          parent: [idComentario], //Tem que fazer a funcção de curtidas tbm 
-          date: moment().format('DD/MM/YYYY'),
-          u_avatar: 'https://cdn65.picsart.com/199770357003202.gif',
-          u_name: 'Assada San',
-          comment: {
-            spoiler: false,
-            text: this.state.commentReplay
-          }
+  submitReplay(e, id) {
+    const {name, value} = e.target
+    if (e.key === "Enter") { //pega o evento de clicar com o Enter         
+      if (this.state[name] !== '') {       
+        let data = {
+          content: this.state[name]
         }
-        this.setState(prevState => ({
-          comments: [...prevState.comments, newitem],
-          commentReplay: '',
-        }))
+        Api.createComment(id, data).then(res => {
+          if (res.status !== undefined && res.status === 'success') {
+            PopUp.showMessage('success', res.data.message)
+            this.setState({[name]: ''})            
+          }
+          else {
+            PopUp.showMessage('error', 'Houve um problema com sua solicitação!!')
+          }
+        })
       }
     }
+  }
+
+  renderDateFormat(date){
+    return moment(date, 'YYYY-MM-DD HH:mm').format('DD-MM-YYYY HH:mm')
+
   }
 
   commentsRender(theme) {
@@ -276,7 +291,7 @@ class MMComments extends Component {
 
       return comments.map((x, y) => {
         // if (x.parent.length === 0) {
-        let replays = x.comments.length
+        let replays = x.comments.length      
 
         return (
           <div key={`${y}first`} className={'mx-auto mb-4'} style={{ width: 700, border: '#f57600' }}>
@@ -285,7 +300,7 @@ class MMComments extends Component {
                 <img src={x.user.avatar !== null ? `data:image/png;base64,${x.user.avatar}` : imgdef} className="rounded" width={40} height={40} alt="" />
                 <div className='ml-3'>
                   <h6 className={css(style(theme).autorPosting)}>{x.user.username}</h6>
-                  <h6 className={css(style(theme).datingPosting)}>{x.created_at}</h6>
+                  <h6 className={css(style(theme).datingPosting)}>{this.renderDateFormat(x.created_at)}</h6>
                 </div>
                 <div onClick={() => { alert('Reportado!!!') }} className={css(style(theme).reportFlag)} >
                   <MDBIcon fas icon='flag' className={css(style(theme).flagReportPosting)} />
@@ -308,7 +323,7 @@ class MMComments extends Component {
               </MDBCardBody>
               < MDBCardFooter style={{ flexDirection: 'row', display: 'flex', position: 'relative' }}>
                 <div>
-                  <span className={`${css(style(theme).postingSharedText)} mr-5`}><MDBIcon icon='reply' fas /> {replays.length} Respostas</span>
+                  <span className={`${css(style(theme).postingSharedText)} mr-5`}><MDBIcon icon='reply' fas />  {replays} Respostas</span>
                   <span className={css(style(theme).postingSharedText)}><a onClick={(e) => this.submitLikes(e, x.id)}><MDBIcon icon='heart' fas /></a> {x.__meta__.likes_count}</span>
 
                 </div>
@@ -326,7 +341,7 @@ class MMComments extends Component {
 
               </MDBCardFooter>
               <MDBCardHeader >
-                {/* <MMInput value={this.state.commentReplay} onKeyDown={(e) => {this.addcommentReplay(e, x.id)}} onChange={this.listInput} name='commentReplay' /> */}
+                <MMInput value={this.state[`commentReplay${y}`]} onKeyDown={(e) => {this.submitReplay(e, x.id)}} onChange={this.listInput} name={`commentReplay${y}`} />
 
                 {x.comments.map((i, j) => {
 
@@ -334,11 +349,13 @@ class MMComments extends Component {
                     <div key={`${j}replay`} style={{ flexDirection: 'row', display: 'flex' }} >
                       <img src={i.user.avatar !== null ? `data:image/png;base64,${i.user.avatar}` : imgdef} className="rounded" width={40} height={40} alt="" />
                       <div className='ml-3'>
-                        <h6 className={css(style(theme).autorPosting)}>{i.user.username} <span className={css(style(theme).datingReplayPosting)}>{i.created_at}</span></h6>
-                        <h6 className={`${css(style(theme).textReplayPosting)} ${i.spoiler ? css(style(theme).textSpoiler) : ''}`}>{i.content}</h6>
+                        <h6 className={css(style(theme).autorPosting)}>{i.user.username} <span className={css(style(theme).datingReplayPosting)}>{this.renderDateFormat(i.created_at)}</span></h6>
+                        <h6 className={`${css(style(theme).textReplayPosting)} ${i.spoiler ? css(style(theme).textSpoiler) : ''} `}>{i.content}</h6>                       
                       </div>
                       <div className={css(style(theme).reportFlag)} >
-                        <MDBIcon onClick={() => { alert('Deletado!!!') }} fas icon='times' className={`${css(style(theme).flagReportPosting)} mr-5`} />
+                        <MDBIcon onClick={() => { alert('Deletado!!!') }} fas icon='times' className={`${css(style(theme).flagReportPosting)} mr-3`} />
+                        <a className={`${css(style(theme).flagReportPosting)} mr-3 ${css(style(theme).postingSharedText)}`} onClick={(e) => this.submitLikes(e, i.id)}><MDBIcon icon='heart' fas /> {i.__meta__.likes_count}</a>
+                        
                         <MDBIcon fas icon='flag' onClick={() => { alert('Reportado!!!') }} className={css(style(theme).flagReportPosting)} />
                       </div>
                     </div>
@@ -362,62 +379,7 @@ class MMComments extends Component {
       return <center><h6 className={`${css(style(theme).chapterTitle)} mt-2`}>SEM COMENTÁRIOS NO MOMENTO!!</h6></center>
     }
 
-    //  return (
-    //    <>
-    //    <div className={'mx-auto mb-4'} style={{width: 700, border: '#f57600' }}>
-    //    <MDBCard news >
-    //      <MDBCardHeader style={{flexDirection: 'row', display: 'flex'}} >
-    //         <img src='https://cdn130.picsart.com/292599068047201.jpg' class="rounded" width={40} height={40} alt="" />
-    //         <div className='ml-3'>   
-    //         <h6 className={css(style.autorPosting)}>Anna-Senpai</h6>
-    //         <h6 className={css(style.datingPosting)}>02/02/2055</h6>    
-    //         </div>   
-    //         <div onClick={()=>  {alert('Reportado!!!')}} className={css(style.reportFlag)} >
-    //           <MDBIcon fas icon='flag' className={css(style.flagReportPosting)} />
-    //         </div>
-    //      </MDBCardHeader>
-    //      <MDBCardBody>
-    //         <p className={css(style.autorPostingText)}> O mangá é bom, pena que o ASTA é chato pra caralho. TM. Ta faltando o nectar do amor!!!      </p>
-    //         <img src='https://i.giphy.com/media/xT9Igl6lJIXYWLmqBy/giphy.webp' width={'100%'} class='img-fluid' />            
-    //      </MDBCardBody>
-    //      < MDBCardFooter style={{flexDirection: 'row', display: 'flex', position: 'relative'}}>
-    //         <div>
-    //           <span className={`${css(style.postingSharedText)} mr-5` }><MDBIcon icon='reply' fas />15 Respostas</span>
-    //           <span className={css(style.postingSharedText)}><MDBIcon icon='heart' fas /> 8</span>
-
-    //         </div> 
-    //      <div style={{display: 'flex', position: 'absolute', verticalAlign: 'middle', float:'right', right: 0, marginRight: 10}} >
-    //        <h1 className={css(style.postingSharedText)}>Compartilhar: </h1>
-    //        <span>
-    //          <a onClick={()=> {alert('Compartilhando...')}}
-    //         className={`${css(style.socialBtn)} ${css(style.btnFacebook)} waves-effect waves-light`}><MDBIcon fab icon='facebook-f'/></a>
-    //          <a onClick={()=> {alert('Compartilhando...')}}
-    //         className={`${css(style.socialBtn)} ${css(style.btnTwitter)} waves-effect waves-light`}><MDBIcon fab icon='twitter'/></a> 
-    //         <a onClick={()=> {alert('Compartilhando...')}}
-    //         className={`${css(style.socialBtn)} ${css(style.btnTumble)} waves-effect waves-light`}><MDBIcon fab icon='tumblr'/></a>
-    //         </span>
-    //      </div>        
-
-    //      </MDBCardFooter>
-    //      <MDBCardHeader >
-    //        <MMInput onChange={()=> console.log('')} name='replay'  />
-    //        <div style={{flexDirection: 'row', display: 'flex'}} >
-    //         <img src='https://pm1.narvii.com/6840/0f06f9dcb00b3e8fa747988163db299e9213f569v2_128.jpg' class="rounded" width={40} height={40} alt="" />
-    //         <div className='ml-3'>   
-    //         <h6 className={css(style.autorPosting)}>Okuma Tanukichi <span className={css(style.datingReplayPosting)}>02/02/2012</span></h6>
-    //         <h6 className={css(style.textReplayPosting)}>Com isso eu devo concordar,MAS PARA DE PERSEGUIR</h6>    
-    //         </div>
-    //         <div className={css(style.reportFlag)} >
-    //           <MDBIcon onClick={()=>  {alert('Deletado!!!')}}  fas icon='times' className={`${css(style.flagReportPosting)} mr-5` } />
-    //           <MDBIcon fas icon='flag' onClick={()=>  {alert('Reportado!!!')}} className={css(style.flagReportPosting)} />
-    //         </div>   
-
-    //      </div>
-    //      </MDBCardHeader>   
-    //    </MDBCard>  
-    //    </div>
-    //    </>
-    //  )
+    
   }
   render() {
     let theme = this.context

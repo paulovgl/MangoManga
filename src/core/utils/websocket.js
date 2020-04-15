@@ -35,6 +35,10 @@ export class SocketConnection {
         handler.post(message)
       });
 
+      result.on('comments', message => {        
+        handler.comment(message)
+      });
+
       result.on('likes', message => {         
         handler.like(message)
       });
