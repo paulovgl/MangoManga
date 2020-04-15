@@ -27,7 +27,7 @@ import {
   logout(e){
     e.preventDefault();
     this.props.logout();
-    this.props.push('/')
+    this.props.history.push('/')
   }  
 
   setUsername = (user) => {
@@ -105,7 +105,7 @@ import {
                 </MDBDropdownToggle>
                 <MDBDropdownMenu className="dropdown-default" right>                  
                 <MDBDropdownItem onClick={()=> {this.props.history.push('/profile/edit')}}>Editar Usuário</MDBDropdownItem>
-                <MDBDropdownItem onClick={()=> {this.props.history.push('/login')}}>Sair</MDBDropdownItem>
+                <MDBDropdownItem onClick={(e) => this.logout(e)}>Sair</MDBDropdownItem>
                 </MDBDropdownMenu>
               </MDBDropdown>
             </MDBNavItem>
