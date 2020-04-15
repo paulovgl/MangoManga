@@ -515,6 +515,43 @@ const ApiService = {
       }
     })
   },
+
+  // Get Posts
+
+  getPosts: async (id) => {
+    return await axios.get(`${endpoint}/posts/${id}`)
+      .then( response => response.data )
+      .catch(error => {
+        if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+        }
+        else{
+          if(error.response.hasOwnProperty('data') && error.response.data.hasOwnProperty('content') ){
+            return error.response.data
+          }
+        }
+      })
+  },
+
+  createPost: async (id,dados) => {    
+    return await axios.post(`${endpoint}/posts/${id}`, dados, {})
+    .then(response =>{return response.data} )
+    .catch(error => {
+      if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+      }
+      else{
+        console.log(error)
+        const { response } = error;
+        const { request, ...errorObject } = response; // take everything but 'request'
+        if(errorObject.hasOwnProperty('data') && errorObject.data.hasOwnProperty('content')){
+          return  errorObject.data          
+        }
+      }
+    })
+  },
+
+  //Store Posts
   
 
 }
