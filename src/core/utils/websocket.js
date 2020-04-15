@@ -31,10 +31,14 @@ export class SocketConnection {
       //   handler(message)
       // });
 
-      result.on('new', message => {
-        console.log('Incoming', message);
-        handler(message)
+      result.on('new', message => {        
+        handler.post(message)
       });
+
+      result.on('likes', message => {         
+        handler.like(message)
+      });
+
 
       result.on('error', (error) => {
         console.error(error)
