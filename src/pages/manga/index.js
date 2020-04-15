@@ -145,36 +145,7 @@ export default class Manga extends Component {
   static contextType = MMTheme
 
   state={
-    manga: [
-      // {
-      //    id: 1,//
-      //    title: 'Black Clover ',//
-      //    description: 'Em um mundo em que até as tarefas mais simples do dia a dia são feitas com o uso de magia, quem não consegue usá-la é tratado como nada! Esta é a vida de Asta, um jovem que mesmo sem um pingo de magia, sonha em se tornar o Mago Imperador, o mais forte de todos os magos! Com muito esforço e trabalho duro, será ele capaz de atingir seus objetivos e superar seu genial rival e amigo de infância, Yuno?!!',//
-      //    genre: [
-      //      "Ação", 'Aventura', 'Fantasia', 'Magia', 'Shounen'
-      //    ], //
-      //    autor: [{name: 'Tabata, Yuuki', url:''}],//
-      //    scans: [{ name: 'scansPROJECT', url: ''}], //
-      //    editora: [{name: 'Panini', url: 'https://loja.panini.com.br/panini/solucoes/Busca.aspx?fcp=29009'}],
-      //    image: 'https://static3.mangalivre.com/capas/XzJfT6TjJArZeQjuoWyWSA/1751/external_cover.jpg',
-      //    status: 'Ativo', //
-      //    rating: 3, //     
-      //    chapter: [
-      //      {
-      //        id: 1,
-      //        date: '02/08/19',
-      //        title: 'Yunoo!!',
-      //        number: 1             
-      //      },
-      //      {
-      //       id: 2,
-      //       date: '04/04/2020',
-      //       title: 'Yunoo eu te amo!!',
-      //       number: 2             
-      //     }
-      //    ]      
-      //  },      
-      ],
+    manga: [],
       add: false,
   }
 
@@ -367,8 +338,8 @@ export default class Manga extends Component {
             <MDBCol lg='3' md='12'>
               <div>
                 <MDBCard className={css(styles(theme).card)} onClick={()=>{this.state.add ? this.addManga() : this.removeManga()}}>                
-                      <MDBCardImage className="img-fluid" src={this.state.manga[0].image !== null ? this.state.manga[0].image : imgdef } waves={true} />
-                      <MDBCardBody waves={true}
+                      <MDBCardImage className="img-fluid" src={this.state.manga[0].image !== null ? this.state.manga[0].image : imgdef } />
+                      <MDBCardBody
                           className={`
                             ${css(styles(theme).mangaButton)} 
                             ${this.state.add ? css(styles(theme).mangaRemove) : css(styles(theme).mangaAdd) }
@@ -392,7 +363,7 @@ export default class Manga extends Component {
                    <h6 ><b>Autor: </b> 
                    {
                        this.state.manga[0].autor?.map((x,y)=> {
-                       return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
+                       return (<a key={`${y}linkAuthor`} className={css(styles(theme).mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
                        })
                       // <a>Traduzido por: {}</a>
                     }                 
@@ -403,7 +374,7 @@ export default class Manga extends Component {
                   <h6 className={`${css(styles(theme).mangaEditora)}`} > Traduzido por:    
                     {
                        this.state.manga[0].scans?.map((x,y)=> {
-                       return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' >{x.name}</a>)
+                       return (<a key={`${y}linkEditora`} className={css(styles(theme).mangaScan)} href={x.url} target='_blank' >{x.name}</a>)
                        })
                       // <a>Traduzido por: {}</a>
                     }
@@ -414,7 +385,7 @@ export default class Manga extends Component {
                   <h6 className={`${css(styles(theme).mangaEditora) }`}> Editora:  
                     {
                        this.state.manga[0].editora?.map((x,y)=> {
-                       return (<a className={css(styles(theme).mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
+                       return (<a key={`${y}linkScan`} className={css(styles(theme).mangaScan)} href={x.url} target='_blank' > {x.name}</a>)
                        })
                       // <a>Traduzido por: {}</a>
                     }
@@ -444,7 +415,7 @@ export default class Manga extends Component {
   
             <MMTabs data={[
               {name: this.countChapter(), component: this.showList(theme) },
-              {name: 'Comentários', component: <MMComments />}]} />     
+              {name: 'Comentários', component: <MMComments mangaId={this.state.manga[0].id} />}]} />     
         </>
       )
     }
