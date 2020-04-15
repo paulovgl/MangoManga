@@ -35,8 +35,8 @@ export function login(user){
     return axios.post(`${endpoint}/auth/login`, user,)
       .then(async (response)=> {
           if(response.headers["x-access-token"] !== undefined){
-            Token.setToken(response.headers["x-access-token"])
-            setAuthorizationToken(response.headers["x-access-token"])
+           await  Token.setToken(response.headers["x-access-token"])
+            await setAuthorizationToken(response.headers["x-access-token"])
             let roles = await response.data.data.tipo_user            
               if(roles === '0'){
                 roles = await {
