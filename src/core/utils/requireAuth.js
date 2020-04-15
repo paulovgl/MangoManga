@@ -14,21 +14,20 @@ export default function(ComposedComponent, permissions) {
         this.props.history.push('/login');
       }
       if(permissions !== undefined && Array.isArray(permissions)){ 
-        let keys = []   
-        console.log(this.props)
-        // Object.entries(this.props.roles).map((e, f)=> {         
-        //   let search = permissions.find((k) => k === e[0] )
-        //   if(search !== undefined){
-        //     if(search === e[0]){
-        //       keys.push(e[1])
-        //     }
-        //   }
-        // })
-        // let hasPermission = keys.find((f => f === true))  
-        // if(hasPermission === undefined){
-        //    PopUp.showMessage('error', 'Você não tem permissão de acesso!!')
-        //    this.props.history.push('/');
-        // }            
+        let keys = []         
+        Object.entries(this.props.roles).map((e, f)=> {         
+          let search = permissions.find((k) => k === e[0] )
+          if(search !== undefined){
+            if(search === e[0]){
+              keys.push(e[1])
+            }
+          }
+        })
+        let hasPermission = keys.find((f => f === true))  
+        if(hasPermission === undefined){
+           PopUp.showMessage('error', 'Você não tem permissão de acesso!!')
+           this.props.history.push('/');
+        }            
       }
        
     }
