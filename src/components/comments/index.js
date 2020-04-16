@@ -223,6 +223,10 @@ class MMComments extends Component {
     })
   }
 
+  submitLikeComment = (event, post_id, comment_id) => {
+
+  }
+
 
   submitInput = (event, id) => {
     const { comment } = this.state
@@ -354,7 +358,7 @@ class MMComments extends Component {
                       </div>
                       <div className={css(style(theme).reportFlag)} >
                         <MDBIcon onClick={() => { alert('Deletado!!!') }} fas icon='times' className={`${css(style(theme).flagReportPosting)} mr-3`} />
-                        <a className={`${css(style(theme).flagReportPosting)} mr-3 ${css(style(theme).postingSharedText)}`} onClick={(e) => this.submitLikes(e, i.id)}><MDBIcon icon='heart' fas /> {i.__meta__.likes_count}</a>
+                        <a className={`${css(style(theme).flagReportPosting)} mr-3 ${css(style(theme).postingSharedText)}`} onClick={(e) => this.submitLikeComment(e, x.id, i.id)}><MDBIcon icon='heart' fas /> {i.__meta__.likes_count}</a>
                         
                         <MDBIcon fas icon='flag' onClick={() => { alert('Reportado!!!') }} className={css(style(theme).flagReportPosting)} />
                       </div>
