@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, css} from 'aphrodite'
 import { MMTheme} from '../theme';
 import DatePicker from 'react-date-picker';
+import {MDBIcon} from 'mdbreact';
 // import { registerLocale, setDefaultLocale } from  "react-datepicker";
 // import pt_BR from 'date-fns/locale/pt-BR';
 // import "react-datepicker/dist/react-datepicker.css";
@@ -67,6 +68,36 @@ const styles = (theme) => StyleSheet.create({
   },
   swsDatePicker:{
     background: "#f4ff"
+  },
+  textarea_container: {
+    position: 'relative'
+  },
+  button_input_image_label:{
+    color: '#aaa',
+    cursor: 'pointer',  
+  },
+  button_input_image:{
+    position: 'absolute',
+    top: 12,
+    right: 3,
+  },
+  visualizedImage:{
+    border: '3px dotted #f57600',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,    
+    position: 'relative',
+  },
+  visualizedImage_button: {
+    position: 'absolute',
+    backgroundColor: theme.buttons.default.background,
+    padding: '0.5rem 1.6rem',
+    fontSize: `0.64rem`,
+    color: theme.buttons.default.color,
+    top: 5,
+    right: 5, 
+    cursor: 'pointer'
   }
 })
 
@@ -196,6 +227,8 @@ class MMSelect extends Component {
 
 }
 
+
+
 class MMInputArea extends Component {
   static contextType = MMTheme
   render(){
@@ -221,6 +254,57 @@ class MMInputArea extends Component {
   )
 } 
 }
+
+
+class MMInputWithButton extends Component {
+  static contextType = MMTheme
+  render(){
+  let theme = this.context
+  let props = this.props  
+  return (
+    <div>
+        <div className="form-group">
+        <label  htmlFor={props.id} > <span className={` ${css(styles(theme).swsLabel)} control-label `} >{props.label}</span ></label>
+        <div className={css(styles(theme).textarea_container)} >
+        <textarea  
+          placeholder = {props.placeholder ? props.placeholder : ''}         
+          id={props.id}
+          value={props.value}
+          readOnly={props.readOnly ? true : false}
+          onChange={props.onChange}
+          className={ `form-control textarea pr-5 ${props.validation ? 'validate' : ''} ${css(styles(theme).swsInputArea)}`}
+          name={props.name}
+          rows={2}
+        >      
+        </textarea>
+        <div className={css(styles(theme).button_input_image)}  >
+        <label for={`img-up${props.id}`} className={css(styles(theme).button_input_image_label)} ><MDBIcon far icon='image' size='2x' /></label>
+        <input 
+        id={`img-up${props.id}`}
+        type='file'       
+        // value={props.imageValue}      
+        accept={props.accept} 
+        onChange={props.onChangeImage} 
+        className={`d-none`}        
+        name={props.imageName} />
+        </div> 
+
+        <div 
+         style={{textAlign: 'center', display: (props.imageValue !== null) && (props.imageValue !== undefined) ? 'block' : 'none' }}
+         className={css(styles(theme).visualizedImage)} >  
+            <div onClick={() => props.remove()} className={css(styles(theme).visualizedImage_button)}>
+             <MDBIcon icon='times' /> 
+            </div>             
+            <img  class='img-fluid mx-auto' src={props.imageValue} alt='' />
+        </div>  
+        </div>
+        </div>
+    </div>
+  )
+} 
+}
+
+
 class MMDatepicker extends Component {
   static contextType = MMTheme
   render(){
@@ -246,4 +330,4 @@ class MMDatepicker extends Component {
   }
 }
 
-export {MMInput, MMSelect, MMInputArea, MMSection, MMFile, MMDatepicker }
+export {MMInput, MMSelect, MMInputArea, MMSection, MMFile, MMDatepicker, MMInputWithButton }

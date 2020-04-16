@@ -43,6 +43,10 @@ export class SocketConnection {
         handler.like(message)
       });
 
+      result.on('likes_comment', message => {         
+        handler.likecomment(message)
+      });
+
 
       result.on('error', (error) => {
         console.error(error)

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { MMInputArea, MMInput } from '../formulario/index'
+import { MMInput, MMInputWithButton } from '../formulario/index'
 import { MMButton } from '../../components/buttons'
 import { MDBCard, MDBCardHeader, MDBIcon, MDBCardBody, MDBCardFooter } from 'mdbreact'
 import { StyleSheet, css } from 'aphrodite'
@@ -8,7 +8,6 @@ import Api from '../../core/api'
 import { MMTheme } from '../theme'
 import imgdef from '../../images/Avatar.webp'
 import PopUp from '../notifications';
-import ws from '../../core/utils/websocket'
 import connection from '../../core/utils/websocket';
 
 
@@ -158,18 +157,24 @@ class MMComments extends Component {
 
   static contextType = MMTheme
 
-  state = {
-    comment: '',
-    spoiler: Boolean,
-    commentReplay: '',
-    comments: [
-
-    ]
+  constructor(props){
+    super(props)
+    this.state = {
+      comment: '',
+      spoiler: false,
+      image: null,
+      commentReplay: '',
+      comments: [
+  
+      ]
+    }
+    this.handleFileChange = this.handleFileChange.bind(this);
   }
+  
 
   componentDidMount() {
     connection.connect();
-    subscription = connection.subscribe(`posts`, { post: this.handleMessageAdd, like: this.handleLikesAdd, comment: this.handleCommentsAdd });
+    subscription = connection.subscribe(`posts`, { post: this.handleMessageAdd, like: this.handleLikesAdd, comment: this.handleCommentsAdd, likecomment:  this.handleLikesCommentsAdd });
     this.getData();
   }
 
@@ -192,6 +197,16 @@ class MMComments extends Component {
     this.setState({comments: a});
   }
 
+  handleLikesCommentsAdd = async (message) => {    
+    let { likes, post_id, comment_id } = message   
+    let a = await this.state.comments.slice();    
+    let idx = await a.findIndex(item => item.id === parseInt(post_id))
+    let idy = await a[idx].comments.findIndex(item => item.id === parseInt(comment_id))
+    a[idx].comments[idy].__meta__.likes_count = likes
+    this.setState({comments: a})
+    }
+
+  
   handleCommentsAdd = async (message) => {    
     let { id, data } = message
     let a = await this.state.comments.slice();
@@ -200,6 +215,10 @@ class MMComments extends Component {
     await comments.push(data)
     this.setState({comments: a})
     
+  }
+
+  handleSpoiler(e){
+    this.setState({spoiler: !this.state.spoiler})
   }
 
   async getData() {
@@ -224,19 +243,27 @@ class MMComments extends Component {
   }
 
   submitLikeComment = (event, post_id, comment_id) => {
-
+    Api.createLikeComment(post_id, comment_id).then(res => {
+      if (res.status !== undefined && res.status === 'error') {
+        res.content.map((x, y) => {
+          PopUp.showMessage('error', x.message)
+        })
+      }
+    })
   }
 
 
   submitInput = (event, id) => {
-    const { comment } = this.state
+    const { comment, spoiler, image } = this.state
     let data = {
-      content: comment
+      content: comment,
+      spoiler: spoiler,
+      image: image
     }
     Api.createPost(id, data).then(res => {
       if (res.status !== undefined && res.status === 'success') {
         PopUp.showMessage('success', res.data.message)
-        this.setState({comment: ''})
+        this.setState({comment: '', image: null})
       }
       else {
         PopUp.showMessage('error', 'Houve um problema com sua solicitação!!')
@@ -252,12 +279,23 @@ class MMComments extends Component {
     })
   }
 
+  handleFileChange(event){
+    const { name, files } = event.target    
+    console.log(name, files)
+    let reader = new FileReader();
+    let file = files[0];
+    reader.onload = () => {
+        this.setState({ [name]: reader.result });
+    }
+    reader.readAsDataURL(file);
+}
+
   removeSpoiler(id, key) {
-    let postnumber = this.state.comments.find((f) => f.id === id)
+    // let postnumber = this.state.comments.find((f) => f.id === id)
 
     let items = [...this.state.comments];
     let item = { ...items[key] }
-    item.comment.spoiler = false;
+    item.spoiler = false;
     items[key] = item;
     this.setState({ comments: items });
   }
@@ -314,15 +352,15 @@ class MMComments extends Component {
                 {x.content !== null ? <p className={`${css(style(theme).autorPostingText)} 
           ${ x.spoiler ? css(style(theme).textSpoiler) : ''} `}> {x.content}</p> : ''}
 
-                {/* {x.comment.image !== null ?
-                    <div style={{position: 'relative'}}><img src={x.comment.image} alt='' width={'100%'} className='img-fluid' />
-                     {x.comment.spoiler ? <div className={` aaaa ${css(style(theme).imgSpoiler)}`} >
-                       <div className={css(style(theme).btnSpoilerImage)} >
-                         <button className={css(style(theme).btnSpoiler)} onClick={()=> {this.removeSpoiler(x.id, y)}} >Spoiler</button >
-                       </div>
-                     </div> : ''}
-                    </div>
-                    : ''} */}
+              {x.image !== null ?
+                  <div style={{position: 'relative'}}><img src={`data:image/webp;base64,${x.image}`} alt='' width={'100%'} className='img-fluid' />
+                    {x.spoiler ? <div className={` aaaa ${css(style(theme).imgSpoiler)}`} >
+                      <div className={css(style(theme).btnSpoilerImage)} >
+                        <button className={css(style(theme).btnSpoiler)} onClick={()=> {this.removeSpoiler(x.id, y)}} >Spoiler</button >
+                      </div>
+                    </div> : ''}
+                  </div>
+                  : ''}
 
               </MDBCardBody>
               < MDBCardFooter style={{ flexDirection: 'row', display: 'flex', position: 'relative' }}>
@@ -390,9 +428,23 @@ class MMComments extends Component {
     return (
       <>
         <form>
-          <MMInputArea name='comment' placeholder={'Em que loli, você está pensando?!'} value={this.state.comment} onChange={this.listInput} />
+          <div>
+          <MMInputWithButton 
+            label={this.state.spoiler === true ? 'Spoiler' : null} 
+            name='comment' 
+            placeholder={'Em que loli, você está pensando?!'} 
+            value={this.state.comment} 
+            onChange={this.listInput} 
+            imageName='image'
+            imageValue={this.state.image}
+            id='img-UP'
+            remove={() => this.setState({image:null})}
+            onChangeImage = {this.handleFileChange} 
+            accept='image/png, image/jpeg, image/webp, image/gif'
+            />
+          </div>
           <div style={{ flexDirection: 'row', justifyContent: 'space-between', }} >
-            <MMButton onClick={() => alert(this.state.comment)} title='Spoiller' />
+            <MMButton onClick={(e) => this.handleSpoiler(e)} title='Spoiler' />
             <MMButton onClick={(e) => this.submitInput(e, this.props.mangaId)} title='Postar' />
           </div>
         </form>
