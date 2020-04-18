@@ -8,7 +8,11 @@ import Api from '../../core/api'
 import { MMTheme } from '../theme'
 import imgdef from '../../images/Avatar.webp'
 import PopUp from '../notifications';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import './comments.scss'
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import connection from '../../core/utils/websocket';
+import { connect } from 'react-redux'
 
 
 let subscription;
@@ -151,13 +155,34 @@ const style = (theme) => StyleSheet.create({
     color: theme.manga.chapter.title.color,
     fontWeight: '500'
   },
+
+  custom_ui: {
+    backgroundColor: theme.cards.confirm.background,
+    color: theme.cards.confirm.color,
+    borderRadius: 6,
+    padding: 20
+  },
+  custom_ui_title: {
+    fontSize: 18,
+    textTransform: 'uppercase',
+    color: theme.manga.chapter.title.color,
+    fontWeight: '500',
+    textAlign: 'center'
+  },
+  custom_ui_message: {
+    fontSize: 13,
+    textTransform: 'uppercase',
+    // color: theme.manga.chapter.title.color,
+    // fontWeight: '500',
+    textAlign: 'center'
+  }
 })
 
 class MMComments extends Component {
 
   static contextType = MMTheme
 
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       comment: '',
@@ -165,16 +190,16 @@ class MMComments extends Component {
       image: null,
       commentReplay: '',
       comments: [
-  
+
       ]
     }
     this.handleFileChange = this.handleFileChange.bind(this);
   }
-  
+
 
   componentDidMount() {
     connection.connect();
-    subscription = connection.subscribe(`posts`, { post: this.handleMessageAdd, like: this.handleLikesAdd, comment: this.handleCommentsAdd, likecomment:  this.handleLikesCommentsAdd });
+    subscription = connection.subscribe(`posts`, { post: this.handleMessageAdd, like: this.handleLikesAdd, comment: this.handleCommentsAdd, likecomment: this.handleLikesCommentsAdd, deletecomment: this.handleDeleteComment });
     this.getData();
   }
 
@@ -188,48 +213,110 @@ class MMComments extends Component {
     }
   };
 
-  handleLikesAdd = async (message) => {    
+  handleLikesAdd = async (message) => {
     let { likes, id } = message
     let a = await this.state.comments.slice();
-    console.log(a)
     let idx = await a.findIndex(item => item.id === parseInt(id))
-    a[idx].__meta__.likes_count = likes ;
-    this.setState({comments: a});
+    if (idx !== -1) {
+      a[idx].__meta__.likes_count = likes;
+      this.setState({ comments: a });
+    }
   }
 
-  handleLikesCommentsAdd = async (message) => {    
-    let { likes, post_id, comment_id } = message   
-    let a = await this.state.comments.slice();    
+  handleLikesCommentsAdd = async (message) => {
+    let { likes, post_id, comment_id } = message
+    let a = await this.state.comments.slice();
     let idx = await a.findIndex(item => item.id === parseInt(post_id))
-    let idy = await a[idx].comments.findIndex(item => item.id === parseInt(comment_id))
-    a[idx].comments[idy].__meta__.likes_count = likes
-    this.setState({comments: a})
+    if (idx !== -1) {
+      let idy = await a[idx].comments.findIndex(item => item.id === parseInt(comment_id))
+      a[idx].comments[idy].__meta__.likes_count = likes
+      this.setState({ comments: a })
     }
+  }
 
-  
-  handleCommentsAdd = async (message) => {    
+
+  handleCommentsAdd = async (message) => {
     let { id, data } = message
     let a = await this.state.comments.slice();
     let idx = await a.findIndex(item => item.id === parseInt(id))
-    let comments = await a[idx].comments
-    await comments.push(data)
-    this.setState({comments: a})
-    
+    if (idx !== -1) {
+      let comments = await a[idx].comments
+      await comments.push(data)
+      this.setState({ comments: a })
+    }
   }
 
-  handleSpoiler(e){
-    this.setState({spoiler: !this.state.spoiler})
+  handleSpoiler(e) {
+    this.setState({ spoiler: !this.state.spoiler })
+  }
+
+  handleDeleteComment = async (message) => {
+    let { id, data } = message
+    let a = await this.state.comments.slice();
+    let idx = await a.findIndex(item => item.id === parseInt(id))
+    if (idx !== -1) {
+      a[idx].comments = data
+      this.setState({ comments: a })
+    }
   }
 
   async getData() {
-
     Api.getPosts(this.props.mangaId).then(
-      res => {        
+      res => {
         if (res.status && res.status === 'success') {
           this.setState({ comments: res.data.data })
         }
       }
     )
+  }
+
+  deleteComment(id, theme) {
+    if (this.props.roles.administrador) {
+      return <MDBIcon onClick={() => this.inputDeleteComment(id.id, id.post_id)} fas icon='times' className={`${css(style(theme).flagReportPosting)} mr-3`} />
+    }
+    else {
+      if (id.user.username === this.props.auth.username) {
+        return <MDBIcon onClick={() => { this.inputDeleteComment(id.id, id.post_id) }} fas icon='times' className={`${css(style(theme).flagReportPosting)} mr-3`} />
+      }
+    }
+  }
+
+  inputDeleteComment(id_comment, id_post) {
+    let theme = this.context;
+    confirmAlert({
+
+      customUI: ({ onClose }) => {
+        return (
+          <div className={`${css(style(theme).custom_ui)}`}>
+            <h1 className={`${css(style(theme).custom_ui_title)}`} >Você tem certeza que deseja deletar?</h1>
+            <p className={`${css(style(theme).custom_ui_message)}`}>A operação é irreversível</p>
+            <center>
+            <MMButton title='Sim' onClick={() => {
+                send(id_comment, id_post);
+                onClose();
+              }} />
+              <MMButton title='Não' onClick={onClose} />  
+            </center>
+
+          </div>
+        );
+      }
+    });
+
+    const send = (id_comment, id_post) => {
+      Api.deleteComment(id_post, id_comment).then(res => {
+        if (res.status === 'success') {
+          PopUp.showMessage('success', res.data.message)
+        }
+        else if (res.status === 'error') {
+          res.content.map((x, y) => {
+            PopUp.showMessage('error', x.message)
+          })
+        }
+      })
+    }
+
+
   }
 
   submitLikes = (event, id) => {
@@ -263,7 +350,7 @@ class MMComments extends Component {
     Api.createPost(id, data).then(res => {
       if (res.status !== undefined && res.status === 'success') {
         PopUp.showMessage('success', res.data.message)
-        this.setState({comment: '', image: null})
+        this.setState({ comment: '', image: null })
       }
       else {
         PopUp.showMessage('error', 'Houve um problema com sua solicitação!!')
@@ -279,16 +366,16 @@ class MMComments extends Component {
     })
   }
 
-  handleFileChange(event){
-    const { name, files } = event.target    
+  handleFileChange(event) {
+    const { name, files } = event.target
     console.log(name, files)
     let reader = new FileReader();
     let file = files[0];
     reader.onload = () => {
-        this.setState({ [name]: reader.result });
+      this.setState({ [name]: reader.result });
     }
     reader.readAsDataURL(file);
-}
+  }
 
   removeSpoiler(id, key) {
     // let postnumber = this.state.comments.find((f) => f.id === id)
@@ -301,16 +388,16 @@ class MMComments extends Component {
   }
 
   submitReplay(e, id) {
-    const {name, value} = e.target
+    const { name, value } = e.target
     if (e.key === "Enter") { //pega o evento de clicar com o Enter         
-      if (this.state[name] !== '') {       
+      if (this.state[name] !== '') {
         let data = {
           content: this.state[name]
         }
         Api.createComment(id, data).then(res => {
           if (res.status !== undefined && res.status === 'success') {
             PopUp.showMessage('success', res.data.message)
-            this.setState({[name]: ''})            
+            this.setState({ [name]: '' })
           }
           else {
             PopUp.showMessage('error', 'Houve um problema com sua solicitação!!')
@@ -320,7 +407,7 @@ class MMComments extends Component {
     }
   }
 
-  renderDateFormat(date){
+  renderDateFormat(date) {
     return moment(date, 'YYYY-MM-DD HH:mm').format('DD-MM-YYYY HH:mm')
 
   }
@@ -333,7 +420,7 @@ class MMComments extends Component {
 
       return comments.map((x, y) => {
         // if (x.parent.length === 0) {
-        let replays = x.comments.length      
+        let replays = x.comments.length
 
         return (
           <div key={`${y}first`} className={'mx-auto mb-4'} style={{ width: 700, border: '#f57600' }}>
@@ -352,11 +439,11 @@ class MMComments extends Component {
                 {x.content !== null ? <p className={`${css(style(theme).autorPostingText)} 
           ${ x.spoiler ? css(style(theme).textSpoiler) : ''} `}> {x.content}</p> : ''}
 
-              {x.image !== null ?
-                  <div style={{position: 'relative'}}><img src={`data:image/webp;base64,${x.image}`} alt='' width={'100%'} className='img-fluid' />
+                {x.image !== null ?
+                  <div style={{ position: 'relative' }}><img src={`data:image/webp;base64,${x.image}`} alt='' width={'100%'} className='img-fluid' />
                     {x.spoiler ? <div className={` aaaa ${css(style(theme).imgSpoiler)}`} >
                       <div className={css(style(theme).btnSpoilerImage)} >
-                        <button className={css(style(theme).btnSpoiler)} onClick={()=> {this.removeSpoiler(x.id, y)}} >Spoiler</button >
+                        <button className={css(style(theme).btnSpoiler)} onClick={() => { this.removeSpoiler(x.id, y) }} >Spoiler</button >
                       </div>
                     </div> : ''}
                   </div>
@@ -383,7 +470,7 @@ class MMComments extends Component {
 
               </MDBCardFooter>
               <MDBCardHeader >
-                <MMInput value={this.state[`commentReplay${y}`]} onKeyDown={(e) => {this.submitReplay(e, x.id)}} onChange={this.listInput} name={`commentReplay${y}`} />
+                <MMInput value={this.state[`commentReplay${y}`]} onKeyDown={(e) => { this.submitReplay(e, x.id) }} onChange={this.listInput} name={`commentReplay${y}`} />
 
                 {x.comments.map((i, j) => {
 
@@ -392,12 +479,12 @@ class MMComments extends Component {
                       <img src={i.user.avatar !== null ? `data:image/png;base64,${i.user.avatar}` : imgdef} className="rounded" width={40} height={40} alt="" />
                       <div className='ml-3'>
                         <h6 className={css(style(theme).autorPosting)}>{i.user.username} <span className={css(style(theme).datingReplayPosting)}>{this.renderDateFormat(i.created_at)}</span></h6>
-                        <h6 className={`${css(style(theme).textReplayPosting)} ${i.spoiler ? css(style(theme).textSpoiler) : ''} `}>{i.content}</h6>                       
+                        <h6 className={`${css(style(theme).textReplayPosting)} ${i.spoiler ? css(style(theme).textSpoiler) : ''} `}>{i.content}</h6>
                       </div>
                       <div className={css(style(theme).reportFlag)} >
-                        <MDBIcon onClick={() => { alert('Deletado!!!') }} fas icon='times' className={`${css(style(theme).flagReportPosting)} mr-3`} />
+                        {this.deleteComment(i, theme)}
                         <a className={`${css(style(theme).flagReportPosting)} mr-3 ${css(style(theme).postingSharedText)}`} onClick={(e) => this.submitLikeComment(e, x.id, i.id)}><MDBIcon icon='heart' fas /> {i.__meta__.likes_count}</a>
-                        
+
                         <MDBIcon fas icon='flag' onClick={() => { alert('Reportado!!!') }} className={css(style(theme).flagReportPosting)} />
                       </div>
                     </div>
@@ -421,7 +508,7 @@ class MMComments extends Component {
       return <center><h6 className={`${css(style(theme).chapterTitle)} mt-2`}>SEM COMENTÁRIOS NO MOMENTO!!</h6></center>
     }
 
-    
+
   }
   render() {
     let theme = this.context
@@ -429,18 +516,18 @@ class MMComments extends Component {
       <>
         <form>
           <div>
-          <MMInputWithButton 
-            label={this.state.spoiler === true ? 'Spoiler' : null} 
-            name='comment' 
-            placeholder={'Em que loli, você está pensando?!'} 
-            value={this.state.comment} 
-            onChange={this.listInput} 
-            imageName='image'
-            imageValue={this.state.image}
-            id='img-UP'
-            remove={() => this.setState({image:null})}
-            onChangeImage = {this.handleFileChange} 
-            accept='image/png, image/jpeg, image/webp, image/gif'
+            <MMInputWithButton
+              label={this.state.spoiler === true ? 'Spoiler' : null}
+              name='comment'
+              placeholder={'Em que loli, você está pensando?!'}
+              value={this.state.comment}
+              onChange={this.listInput}
+              imageName='image'
+              imageValue={this.state.image}
+              id='img-UP'
+              remove={() => this.setState({ image: null })}
+              onChangeImage={this.handleFileChange}
+              accept='image/png, image/jpeg, image/webp, image/gif'
             />
           </div>
           <div style={{ flexDirection: 'row', justifyContent: 'space-between', }} >
@@ -450,11 +537,14 @@ class MMComments extends Component {
         </form>
         {this.commentsRender(theme)}
       </>
-
-
-
     )
   }
 }
 
-export { MMComments }
+function mapStateToProps(state) {
+  return {
+    auth: state.auth.user,
+    roles: state.roles.roles
+  }
+}
+export default connect(mapStateToProps)(MMComments) 

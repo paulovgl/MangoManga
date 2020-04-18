@@ -589,6 +589,24 @@ const ApiService = {
     })
   },
 
+  deleteComment: async (id_post, id_comment) => { 
+    return await axios.delete(`${endpoint}/posts/${id_post}/comments/${id_comment}`, {})
+    .then(response =>{return response.data})
+    .catch(error => {
+      if(!error.response){
+          return {status: 'error', content: [{message: 'Você está sem conexão' }]}
+      }
+      else{
+        console.log(error)
+        const { response } = error;
+        const { request, ...errorObject } = response; // take everything but 'request'
+        if(errorObject.hasOwnProperty('data') && errorObject.data.hasOwnProperty('content')){
+          return  errorObject.data          
+        }
+      }
+    })
+  },
+
   createLikeComment: async (id_post, id_comment) => {  
     return await axios.post(`${endpoint}/posts/${id_post}/${id_comment}/likes`, {})
     .then(response =>{return response.data})

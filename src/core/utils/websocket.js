@@ -47,6 +47,10 @@ export class SocketConnection {
         handler.likecomment(message)
       });
 
+      result.on('delete_comment', message => {         
+        handler.deletecomment(message) 
+      });
+
 
       result.on('error', (error) => {
         console.error(error)

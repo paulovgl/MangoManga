@@ -60,6 +60,16 @@ export const themes = {
       }
     },
     cards: {
+      confirm: {
+        background: '#fff',
+        color: 'rgba(62, 69, 81)',
+        title: {
+
+        },
+        message: {
+
+        }
+      },
       default:{
         header: {
           background: 'deep-orange darken-2',
@@ -203,6 +213,16 @@ export const themes = {
       }
     },
     cards: {
+      confirm: {
+        background: '#3e4551',
+        color: '#fff',
+        title: {
+
+        },
+        message: {
+
+        }
+      },
       default:{
         header: {
           background: 'deep-orange darken-2',

@@ -6,7 +6,7 @@ import { StyleSheet, css } from 'aphrodite';
 import MMRating from '../../components/rating'
 import moment from 'moment';
 import {MMTabs} from '../../components/tabs'
-import {MMComments} from '../../components/comments/'
+import MMComments from '../../components/comments/'
 import {MMTheme} from '../../components/theme'
 import {MMSpinner} from '../../components/loading'
 import Api from '../../core/api'
