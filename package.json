@@ -12,7 +12,7 @@
     "axios": "^0.19.2",
     "hoist-non-react-statics": "^3.3.2",
     "mdbreact": "^4.25.5",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "react": "^16.13.1",
     "react-confirm-alert": "^2.6.1",
     "react-date-picker": "^8.0.1",
